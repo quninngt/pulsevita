@@ -13,6 +13,8 @@ import com.healthapp.util.SolarTermUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +30,7 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
         loadData()
@@ -45,6 +48,7 @@ class HomeViewModel @Inject constructor(
         loadSolarTerm()
         loadDailyChallenge()
         loadDailyFood()
+        loadWeeklyData()
 
         // Reactive local data
         waterRepository.getTodayTotalAmount().onEach { amount ->
@@ -91,9 +95,13 @@ class HomeViewModel @Inject constructor(
             moodRepository.getAllDistinctDates()
         ) { waterDates, exerciseDates, moodDates ->
             val allDates = (waterDates + exerciseDates + moodDates).toSet()
-            countConsecutiveDays(allDates)
-        }.onEach { streak ->
-            _uiState.update { it.copy(streakDays = streak) }
+            val dateSet = allDates.map { LocalDate.parse(it, dateFormatter) }.toSet()
+            val streak = countConsecutiveDays(allDates)
+            Pair(dateSet, streak)
+        }.onEach { (dateSet, streak) ->
+            _uiState.update {
+                it.copy(streakDays = streak, streakDates = dateSet)
+            }
         }.launchIn(viewModelScope)
     }
 
@@ -107,6 +115,24 @@ class HomeViewModel @Inject constructor(
             current = current.minusDays(1)
         }
         return streak
+    }
+
+    /**
+     * 加载最近7天的趋势数据
+     */
+    private fun loadWeeklyData() {
+        viewModelScope.launch {
+            val waterAmounts = waterRepository.getLast7DaysAmounts()
+            _uiState.update { it.copy(weeklyWaterAmounts = waterAmounts) }
+        }
+        viewModelScope.launch {
+            val exerciseMinutes = exerciseRepository.getLast7DaysMinutes()
+            _uiState.update { it.copy(weeklyExerciseMinutes = exerciseMinutes) }
+        }
+        viewModelScope.launch {
+            val moodLevels = moodRepository.getLast7DaysMoodLevels()
+            _uiState.update { it.copy(weeklyMoodLevels = moodLevels) }
+        }
     }
 
     private fun loadQuote() {

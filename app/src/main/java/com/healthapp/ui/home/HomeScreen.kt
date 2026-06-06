@@ -25,8 +25,13 @@ import androidx.navigation.NavController
 import com.healthapp.navigation.Screen
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.AnimatedCircularProgressRing
+import com.healthapp.ui.components.HealthTipFlipCard
+import com.healthapp.ui.components.MoodTrendChart
 import com.healthapp.ui.components.QuickActionCard
 import com.healthapp.ui.components.SectionHeader
+import com.healthapp.ui.components.StreakCalendar
+import com.healthapp.ui.components.WaterTrendChart
+import com.healthapp.ui.components.ExerciseTrendChart
 import com.healthapp.ui.theme.BrandGreen
 import com.healthapp.ui.theme.GreenHealthy
 import com.healthapp.ui.theme.WaterBlue
@@ -248,7 +253,74 @@ subtitle = uiState.mood.icon
 }
 }
 Spacer(modifier = Modifier.height(20.dp))
-// === 4. Quick Actions ===
+// === 4. 打卡日历 ===
+SectionHeader(
+icon = Icons.Default.CalendarMonth,
+title = "打卡日历"
+)
+Spacer(modifier = Modifier.height(8.dp))
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+) {
+StreakCalendar(
+streakDates = uiState.streakDates,
+modifier = Modifier.padding(12.dp)
+)
+}
+Spacer(modifier = Modifier.height(20.dp))
+// === 5. 健康趋势图 ===
+SectionHeader(
+icon = Icons.Default.TrendingUp,
+title = "健康趋势"
+)
+Spacer(modifier = Modifier.height(8.dp))
+// 饮水趋势
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+) {
+WaterTrendChart(
+dailyAmounts = uiState.weeklyWaterAmounts.map { it.toFloat() },
+modifier = Modifier.padding(16.dp)
+)
+}
+Spacer(modifier = Modifier.height(12.dp))
+// 运动趋势
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+) {
+ExerciseTrendChart(
+dailyMinutes = uiState.weeklyExerciseMinutes,
+modifier = Modifier.padding(16.dp)
+)
+}
+Spacer(modifier = Modifier.height(12.dp))
+// 心情趋势
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+) {
+MoodTrendChart(
+moodLevels = uiState.weeklyMoodLevels.map { (it ?: 0).toFloat() },
+modifier = Modifier.padding(16.dp)
+)
+}
+Spacer(modifier = Modifier.height(20.dp))
+// === 6. Quick Actions ===
 SectionHeader(
 icon = Icons.Default.EditNote,
 title = "快速记录"
@@ -286,7 +358,7 @@ modifier = Modifier.weight(1f)
 )
 }
 Spacer(modifier = Modifier.height(20.dp))
-// === 5. Daily Challenge ===
+// === 7. Daily Challenge ===
 if (uiState.extras.challengeTitle.isNotEmpty()) {
 SectionHeader(
 icon = Icons.Default.EmojiEvents,
@@ -340,49 +412,21 @@ maxLines = 2
 }
 Spacer(modifier = Modifier.height(20.dp))
 }
-// === 6. Health Tip Card ===
+// === 8. Health Tip — 翻转卡片 ===
 uiState.healthTip?.let { tip ->
 SectionHeader(
 icon = Icons.Default.Lightbulb,
 title = "健康贴士"
 )
 Spacer(modifier = Modifier.height(8.dp))
-Card(
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = 16.dp),
-shape = RoundedCornerShape(16.dp),
-elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-) {
-Box(
-modifier = Modifier
-.fillMaxWidth()
-.height(3.dp)
-) {
-Surface(
-color = BrandGreen,
-modifier = Modifier.fillMaxSize()
-) {}
-}
-Column(modifier = Modifier.padding(16.dp)) {
-Text(
-text = tip.title,
-style = MaterialTheme.typography.titleSmall,
-fontWeight = FontWeight.SemiBold,
-color = MaterialTheme.colorScheme.onSecondaryContainer
+HealthTipFlipCard(
+tipTitle = tip.title,
+tipContent = tip.content,
+modifier = Modifier.padding(horizontal = 16.dp)
 )
-Spacer(modifier = Modifier.height(4.dp))
-Text(
-text = tip.content,
-style = MaterialTheme.typography.bodyMedium,
-color = MaterialTheme.colorScheme.onSecondaryContainer
-)
-}
-}
 Spacer(modifier = Modifier.height(20.dp))
 }
-// === 7. Quote Card ===
+// === 9. Quote Card ===
 if (uiState.extras.quote.isNotEmpty()) {
 Card(
 modifier = Modifier
@@ -394,7 +438,7 @@ colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surf
 ) {
 Column(modifier = Modifier.padding(16.dp)) {
 Text(
-text = "“${uiState.extras.quote}”",
+text = "\u201C${uiState.extras.quote}\u201D",
 style = MaterialTheme.typography.bodyMedium,
 color = MaterialTheme.colorScheme.onSurfaceVariant
 )
@@ -410,7 +454,7 @@ color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
 }
 Spacer(modifier = Modifier.height(20.dp))
 }
-// === 8. Food Knowledge Card ===
+// === 10. Food Knowledge Card ===
 if (uiState.extras.foodName.isNotEmpty()) {
 SectionHeader(
 icon = Icons.Default.Spa,

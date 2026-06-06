@@ -38,4 +38,16 @@ class ExerciseRepository @Inject constructor(
     }
 
     suspend fun deleteRecord(record: ExerciseRecord) = exerciseRecordDao.deleteRecord(record)
+
+    /**
+     * 获取最近7天每天的运动时长
+     * @return List<Int> 按日期从旧到新排列，长度固定7
+     */
+    suspend fun getLast7DaysMinutes(): List<Int> {
+        val today = LocalDate.now()
+        return (6 downTo 0).map { daysAgo ->
+            val date = today.minusDays(daysAgo.toLong()).format(dateFormatter)
+            exerciseRecordDao.getTotalDurationByDateOnce(date)
+        }
+    }
 }

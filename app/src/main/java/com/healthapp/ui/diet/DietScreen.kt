@@ -14,9 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthapp.ui.DisplayMappings
+import com.healthapp.ui.components.AnimatedNumber
+import com.healthapp.ui.components.PulseAnimation
 import com.healthapp.ui.theme.WaterBlue
 import com.healthapp.util.Constants
 
@@ -116,7 +119,7 @@ fun WaterTrackingCard(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Water Progress
+            // Water Progress with AnimatedNumber
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(120.dp)
@@ -129,11 +132,9 @@ fun WaterTrackingCard(
                     strokeWidth = 8.dp
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "${currentAmount}ml",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    AnimatedNumber(
+                        targetValue = currentAmount,
+                        suffix = "ml"
                     )
                     Text(
                         text = "目标${goalAmount}ml",
@@ -145,13 +146,15 @@ fun WaterTrackingCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Add Water Buttons
+            // Add Water Buttons with PulseAnimation on the recommended amount
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 WaterAddButton(amount = Constants.WATER_SMALL_AMOUNT, onClick = { onAddWater(Constants.WATER_SMALL_AMOUNT) })
-                WaterAddButton(amount = Constants.WATER_MEDIUM_AMOUNT, onClick = { onAddWater(Constants.WATER_MEDIUM_AMOUNT) })
+                PulseAnimation {
+                    WaterAddButton(amount = Constants.WATER_MEDIUM_AMOUNT, onClick = { onAddWater(Constants.WATER_MEDIUM_AMOUNT) })
+                }
                 WaterAddButton(amount = Constants.WATER_LARGE_AMOUNT, onClick = { onAddWater(Constants.WATER_LARGE_AMOUNT) })
             }
         }

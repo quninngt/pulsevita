@@ -1,6 +1,7 @@
 package com.healthapp.ui.home
 
 import com.healthapp.data.local.entity.HealthTip
+import java.time.LocalDate
 
 /** Weather + location info */
 data class WeatherState(
@@ -57,5 +58,11 @@ data class HomeUiState(
     val water: WaterState = WaterState(),
     val exercise: ExerciseState = ExerciseState(),
     val mood: MoodState = MoodState(),
-    val extras: DailyExtrasState = DailyExtrasState()
+    val extras: DailyExtrasState = DailyExtrasState(),
+    // === 新增：打卡日历数据 ===
+    val streakDates: Set<LocalDate> = emptySet(),
+    // === 新增：7天趋势数据 ===
+    val weeklyWaterAmounts: List<Int> = emptyList(),    // 最近7天饮水量
+    val weeklyExerciseMinutes: List<Int> = emptyList(), // 最近7天运动时长
+    val weeklyMoodLevels: List<Int?> = emptyList()      // 最近7天心情等级
 )

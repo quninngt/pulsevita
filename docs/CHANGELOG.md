@@ -1,5 +1,24 @@
 # 更新日志 (CHANGELOG)
 
+## v1.6.0 (2026-06-06) — 功能界面增强
+
+### 新功能
+- **打卡日历**: 首页集成 kizitonwose/Calendar，显示当月打卡记录，已打卡日期高亮标记
+- **健康趋势图**: 首页新增饮水/运动/心情三个趋势图表（最近7天数据）
+  - 饮水趋势柱状图
+  - 运动趋势柱状图
+  - 心情趋势曲线图
+- **健康贴士翻转卡片**: 点击翻转查看详细内容，替代原来的静态卡片
+- **脉冲动画**: 饮水页面推荐按钮（250ml）添加脉冲呼吸动画
+- **数字渐变动画**: 饮水量数字变化时平滑过渡
+
+### 技术改进
+- 新增 DAO 方法：`getTotalAmountByDateOnce`、`getTotalDurationByDateOnce`、`getLatestMoodLevelByDate`
+- Repository 新增7天数据查询方法
+- HomeUiState 新增 `streakDates`、`weeklyWaterAmounts`、`weeklyExerciseMinutes`、`weeklyMoodLevels`
+
+---
+
 ## v1.4.1 (2026-06-06) — 稳定版
 
 ### 修复

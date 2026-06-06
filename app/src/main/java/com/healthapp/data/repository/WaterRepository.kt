@@ -35,4 +35,16 @@ class WaterRepository @Inject constructor(
     }
 
     suspend fun deleteRecord(record: WaterRecord) = waterRecordDao.deleteRecord(record)
+
+    /**
+     * 获取最近7天每天的饮水量
+     * @return List<Int> 按日期从旧到新排列，长度固定7
+     */
+    suspend fun getLast7DaysAmounts(): List<Int> {
+        val today = LocalDate.now()
+        return (6 downTo 0).map { daysAgo ->
+            val date = today.minusDays(daysAgo.toLong()).format(dateFormatter)
+            waterRecordDao.getTotalAmountByDateOnce(date)
+        }
+    }
 }

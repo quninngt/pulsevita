@@ -20,4 +20,7 @@ interface MoodRecordDao {
 
     @Query("SELECT DISTINCT date FROM mood_records ORDER BY date DESC")
     fun getAllDistinctDates(): Flow<List<String>>
+
+    @Query("SELECT moodLevel FROM mood_records WHERE date = :date ORDER BY timestamp DESC LIMIT 1")
+    suspend fun getLatestMoodLevelByDate(date: String): Int?
 }
