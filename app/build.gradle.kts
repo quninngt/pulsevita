@@ -13,8 +13,8 @@ android {
         applicationId = "com.healthapp.v2"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.4.1"
+        versionCode = 10
+        versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -113,6 +113,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+
+    // UI Libraries
+    implementation("com.kizitonwose.calendar:compose:2.5.4")  // Calendar component
 
     // Testing
     testImplementation("junit:junit:4.13.2")
