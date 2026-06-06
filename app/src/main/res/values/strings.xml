@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PulseVita</string>
+    <string name="tab_home">首页</string>
+    <string name="tab_diet">饮食</string>
+    <string name="tab_exercise">运动</string>
+    <string name="tab_mental">心理</string>
+    <string name="profile_title">个人档案</string>
+    <string name="water_tracker">饮水追踪</string>
+    <string name="exercise_record">运动记录</string>
+    <string name="mood_diary">心情日记</string>
+    <string name="health_tips">健康小贴士</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
+    <string name="add">添加</string>
+    <string name="confirm">确认</string>
+</resources>

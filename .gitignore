@@ -1,0 +1,25 @@
+# Built outputs
+*.apk
+*.ap_
+*.dex
+*.class
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+.DS_Store
+
+# Keystore
+*.jks
+*.keystore
+
+# Crash logs
+crash_log.txt

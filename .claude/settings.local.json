@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x *)",
+      "Bash(java -version)",
+      "Bash(gradle --version)",
+      "Bash(sudo apt-get *)",
+      "Bash(curl -s \"https://get.sdkman.io\")",
+      "Bash(bash)",
+      "Read(//home/ubuntu/**)",
+      "Bash(wget -q \"https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.10%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.10_7.tar.gz\" -O jdk17.tar.gz)",
+      "Bash(rm -f jdk17.tar.gz)",
+      "Bash(wget \"https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz\" -O jdk17.tar.gz)",
+      "Bash(tar -xzf jdk17.tar.gz)",
+      "Bash(rm jdk17.tar.gz)",
+      "Bash(mkdir -p android-sdk/cmdline-tools)",
+      "Bash(wget \"https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip\" -O cmdline-tools.zip)",
+      "Bash(unzip -q cmdline-tools.zip -d android-sdk/cmdline-tools)",
+      "Bash(mv android-sdk/cmdline-tools/cmdline-tools android-sdk/cmdline-tools/latest)",
+      "Bash(rm cmdline-tools.zip)",
+      "Bash(wget \"https://services.gradle.org/distributions/gradle-8.5-bin.zip\" -O gradle.zip)",
+      "Bash(wget \"https://services.gradle.org/distributions/gradle-8.5-bin.zip\")",
+      "Bash(wget \"https://raw.githubusercontent.com/gradle/gradle/v8.5.0/gradle/wrapper/gradle-wrapper.jar\" -O gradle/wrapper/gradle-wrapper.jar)",
+      "Bash(wget \"https://mirrors.cloud.tencent.com/gradle/gradle-8.5-bin.zip\" -O /tmp/gradle-8.5-bin.zip)",
+      "Bash(python3 *)",
+      "Bash(./gradlew testDebugUnitTest *)",
+      "Read(//usr/lib/**)",
+      "Bash(find / -name \"javac\" -type f)",
+      "Bash(export JAVA_HOME=/home/ubuntu/jdk-17.0.2)",
+      "Bash(JAVA_HOME=/home/ubuntu/jdk-17.0.2 /home/ubuntu/gradle/gradle-8.5/bin/gradle assembleDebug *)",
+      "Bash(JAVA_HOME=/home/ubuntu/jdk-17.0.2 /home/ubuntu/gradle/gradle-8.5/bin/gradle testDebugUnitTest *)",
+      "Bash(JAVA_HOME=/home/ubuntu/jdk-17.0.2 /home/ubuntu/gradle/gradle-8.5/bin/gradle clean *)"
+    ]
+  }
+}
