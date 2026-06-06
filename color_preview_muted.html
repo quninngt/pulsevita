@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseVita 低饱和度配色方案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F3EF;
+            padding: 30px;
+            color: #333;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2C2C2C;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        .subtitle {
+            text-align: center;
+            color: #8E8E93;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .inspiration {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+        .inspiration h2 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+        .inspiration-apps {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .inspo-app {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #F8F6F3;
+            border-radius: 10px;
+        }
+        .inspo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .inspo-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .inspo-style {
+            font-size: 11px;
+            color: #8E8E93;
+        }
+        .schemes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .schemes { grid-template-columns: 1fr; }
+        }
+        .scheme {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        .scheme:hover {
+            transform: translateY(-5px);
+        }
+        .scheme-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .scheme-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .scheme-desc {
+            font-size: 13px;
+            color: #8E8E93;
+        }
+        .scheme-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        @media (max-width: 600px) {
+            .scheme-content { grid-template-columns: 1fr; }
+        }
+        .phone-preview {
+            padding: 20px;
+            background: #FAFAF8;
+        }
+        .phone-frame {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .notch {
+            width: 120px;
+            height: 25px;
+            background: #1A1A1A;
+            border-radius: 0 0 15px 15px;
+            margin: 0 auto;
+        }
+        .app-header {
+            padding: 15px 20px;
+            text-align: center;
+        }
+        .app-greeting {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .app-streak {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .app-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 15px 15px;
+        }
+        .app-stat {
+            padding: 12px 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-icon { font-size: 18px; margin-bottom: 4px; }
+        .stat-val { font-size: 14px; font-weight: 600; }
+        .stat-lbl { font-size: 9px; opacity: 0.7; margin-top: 2px; }
+        .app-tip {
+            margin: 0 15px 15px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .tip-title { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+        .tip-text { font-size: 10px; opacity: 0.8; }
+        .app-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+        }
+        .nav-icon { font-size: 18px; margin-bottom: 3px; }
+        .palette {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .palette-title {
+            font-size: 12px;
+            color: #8E8E93;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .color-swatch {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .color-info {
+            flex: 1;
+        }
+        .color-name {
+            font-size: 12px;
+            color: #666;
+        }
+        .color-hex {
+            font-size: 13px;
+            font-weight: 500;
+            font-family: monospace;
+        }
+        .color-usage {
+            font-size: 10px;
+            color: #8E8E93;
+        }
+        .mood-strip {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+        }
+        .mood-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Scheme 1: 莫兰迪蓝绿 */
+        .s1 .status-bar { color: #5A8A8A; }
+        .s1 .app-header { color: #5A8A8A; }
+        .s1 .app-streak { color: #4A7A7A; }
+        .s1 .app-stat { background: #E8F0F0; color: #5A8A8A; }
+        .s1 .app-tip { background: linear-gradient(135deg, #D4E4E4, #E8F0F0); color: #4A6A6A; }
+        .s1 .app-nav { color: #5A8A8A; }
+
+        /* Scheme 2: 莫兰迪暖杏 */
+        .s2 .status-bar { color: #B8907A; }
+        .s2 .app-header { color: #B8907A; }
+        .s2 .app-streak { color: #A07860; }
+        .s2 .app-stat { background: #F5EDE6; color: #B8907A; }
+        .s2 .app-tip { background: linear-gradient(135deg, #EDE0D4, #F5EDE6); color: #8A6A55; }
+        .s2 .app-nav { color: #B8907A; }
+
+        /* Scheme 3: 莫兰迪雾紫 */
+        .s3 .status-bar { color: #9B8FB4; }
+        .s3 .app-header { color: #9B8FB4; }
+        .s3 .app-streak { color: #8578A0; }
+        .s3 .app-stat { background: #EDE8F5; color: #9B8FB4; }
+        .s3 .app-tip { background: linear-gradient(135deg, #E0D8ED, #EDE8F5); color: #7A6E90; }
+        .s3 .app-nav { color: #9B8FB4; }
+
+        /* Scheme 4: 莫兰迪灰绿 */
+        .s4 .status-bar { color: #7A9A7A; }
+        .s4 .app-header { color: #7A9A7A; }
+        .s4 .app-streak { color: #6A8A6A; }
+        .s4 .app-stat { background: #E8F0E8; color: #7A9A7A; }
+        .s4 .app-tip { background: linear-gradient(135deg, #D8E8D8, #E8F0E8); color: #5A7A5A; }
+        .s4 .app-nav { color: #7A9A7A; }
+
+        .recommend {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+        .recommend h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .recommend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .rec-card {
+            padding: 15px;
+            border-radius: 12px;
+            background: #F8F6F3;
+        }
+        .rec-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .rec-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 PulseVita 低饱和度配色方案</h1>
+        <p class="subtitle">参考 Headspace · Calm · Apple Health · Samsung Health 等成熟健康APP设计语言</p>
+
+        <div class="inspiration">
+            <h2>✨ 设计灵感来源</h2>
+            <div class="inspiration-apps">
+                <div class="inspo-app">
+                    <div class="inspo-icon" style="background:#FF9E44">🧘</div>
+                    <div>
+                        <div class="inspo-name">Headspace</div>
+                        <div class="inspo-style">温暖莫兰迪</div>
+                    </div>
+                </div>
+                <div class="inspo-app">
+                    <div class="inspo-icon" style="background:#5B7BA5">🌙</div>
+                    <div>
+                        <div class="inspo-name">Calm</div>
+                        <div class="inspo-style">宁静雾蓝</div>
+                    </div>
+                </div>
+                <div class="inspo-app">
+                    <div class="inspo-icon" style="background:#FF3B30">❤️</div>
+                    <div>
+                        <div class="inspo-name">Apple Health</div>
+                        <div class="inspo-style">精致低饱和</div>
+                    </div>
+                </div>
+                <div class="inspo-app">
+                    <div class="inspo-icon" style="background:#1428A0">💙</div>
+                    <div>
+                        <div class="inspo-name">Samsung Health</div>
+                        <div class="inspo-style">现代科技感</div>
+                    </div>
+                </div>
+                <div class="inspo-app">
+                    <div class="inspo-icon" style="background:#00B0B9">⌚</div>
+                    <div>
+                        <div class="inspo-name">Fitbit</div>
+                        <div class="inspo-style">柔和活力</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="schemes">
+            <!-- 方案 1: 莫兰迪蓝绿 -->
+            <div class="scheme s1">
+                <div class="scheme-header">
+                    <div class="scheme-title">💎 莫兰迪蓝绿</div>
+                    <div class="scheme-desc">参考 Apple Health · 清新专业 · 适合健康数据展示</div>
+                </div>
+                <div class="scheme-content">
+                    <div class="phone-preview">
+                        <div class="phone-frame">
+                            <div class="notch"></div>
+                            <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+                            <div class="app-header">
+                                <div class="app-greeting">早上好，李明港 👋</div>
+                                <div class="app-streak">🔥 连续打卡 7 天</div>
+                            </div>
+                            <div class="app-stats">
+                                <div class="app-stat">
+                                    <div class="stat-icon">💧</div>
+                                    <div class="stat-val">1500ml</div>
+                                    <div class="stat-lbl">今日饮水</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">🏃</div>
+                                    <div class="stat-val">45min</div>
+                                    <div class="stat-lbl">运动时长</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">😊</div>
+                                    <div class="stat-val">良好</div>
+                                    <div class="stat-lbl">今日心情</div>
+                                </div>
+                            </div>
+                            <div class="app-tip">
+                                <div class="tip-title">💡 健康小贴士</div>
+                                <div class="tip-text">夏季养生，宜清淡饮食，多吃瓜果蔬菜</div>
+                            </div>
+                            <div class="app-nav">
+                                <div class="nav-item"><div class="nav-icon">🏠</div>首页</div>
+                                <div class="nav-item"><div class="nav-icon">🍎</div>饮食</div>
+                                <div class="nav-item"><div class="nav-icon">💪</div>运动</div>
+                                <div class="nav-item"><div class="nav-icon">🧠</div>心理</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette">
+                        <div class="palette-title">配色方案</div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#7AADAD"></div>
+                            <div class="color-info">
+                                <div class="color-name">主色调</div>
+                                <div class="color-hex">#7AADAD</div>
+                                <div class="color-usage">按钮、导航、强调</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#5A8A8A"></div>
+                            <div class="color-info">
+                                <div class="color-name">深色</div>
+                                <div class="color-hex">#5A8A8A</div>
+                                <div class="color-usage">文字、标题</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#B8D8D8"></div>
+                            <div class="color-info">
+                                <div class="color-name">浅色</div>
+                                <div class="color-hex">#B8D8D8</div>
+                                <div class="color-usage">卡片背景、装饰</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#F5F9F9"></div>
+                            <div class="color-info">
+                                <div class="color-name">背景</div>
+                                <div class="color-hex">#F5F9F9</div>
+                                <div class="color-usage">页面背景</div>
+                            </div>
+                        </div>
+                        <div class="mood-strip">
+                            <div class="mood-dot" style="background:#E8D4D4">😫</div>
+                            <div class="mood-dot" style="background:#E8DDD4">😔</div>
+                            <div class="mood-dot" style="background:#E8E4D4">😐</div>
+                            <div class="mood-dot" style="background:#D4E4D4">🙂</div>
+                            <div class="mood-dot" style="background:#D4E4E4">😊</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方案 2: 莫兰迪暖杏 -->
+            <div class="scheme s2">
+                <div class="scheme-header">
+                    <div class="scheme-title">🌅 莫兰迪暖杏</div>
+                    <div class="scheme-desc">参考 Headspace · 温暖治愈 · 适合心理健康功能</div>
+                </div>
+                <div class="scheme-content">
+                    <div class="phone-preview">
+                        <div class="phone-frame">
+                            <div class="notch"></div>
+                            <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+                            <div class="app-header">
+                                <div class="app-greeting">早上好，李明港 👋</div>
+                                <div class="app-streak">🔥 连续打卡 7 天</div>
+                            </div>
+                            <div class="app-stats">
+                                <div class="app-stat">
+                                    <div class="stat-icon">💧</div>
+                                    <div class="stat-val">1500ml</div>
+                                    <div class="stat-lbl">今日饮水</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">🏃</div>
+                                    <div class="stat-val">45min</div>
+                                    <div class="stat-lbl">运动时长</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">😊</div>
+                                    <div class="stat-val">良好</div>
+                                    <div class="stat-lbl">今日心情</div>
+                                </div>
+                            </div>
+                            <div class="app-tip">
+                                <div class="tip-title">💡 健康小贴士</div>
+                                <div class="tip-text">夏季养生，宜清淡饮食，多吃瓜果蔬菜</div>
+                            </div>
+                            <div class="app-nav">
+                                <div class="nav-item"><div class="nav-icon">🏠</div>首页</div>
+                                <div class="nav-item"><div class="nav-icon">🍎</div>饮食</div>
+                                <div class="nav-item"><div class="nav-icon">💪</div>运动</div>
+                                <div class="nav-item"><div class="nav-icon">🧠</div>心理</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette">
+                        <div class="palette-title">配色方案</div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#C4A088"></div>
+                            <div class="color-info">
+                                <div class="color-name">主色调</div>
+                                <div class="color-hex">#C4A088</div>
+                                <div class="color-usage">按钮、导航、强调</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#A07860"></div>
+                            <div class="color-info">
+                                <div class="color-name">深色</div>
+                                <div class="color-hex">#A07860</div>
+                                <div class="color-usage">文字、标题</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#E8D8C8"></div>
+                            <div class="color-info">
+                                <div class="color-name">浅色</div>
+                                <div class="color-hex">#E8D8C8</div>
+                                <div class="color-usage">卡片背景、装饰</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#FAF6F2"></div>
+                            <div class="color-info">
+                                <div class="color-name">背景</div>
+                                <div class="color-hex">#FAF6F2</div>
+                                <div class="color-usage">页面背景</div>
+                            </div>
+                        </div>
+                        <div class="mood-strip">
+                            <div class="mood-dot" style="background:#E0C8C0">😫</div>
+                            <div class="mood-dot" style="background:#E8D4C4">😔</div>
+                            <div class="mood-dot" style="background:#E8DCC8">😐</div>
+                            <div class="mood-dot" style="background:#D4DCC4">🙂</div>
+                            <div class="mood-dot" style="background:#C8DCC8">😊</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方案 3: 莫兰迪雾紫 -->
+            <div class="scheme s3">
+                <div class="scheme-header">
+                    <div class="scheme-title">🌙 莫兰迪雾紫</div>
+                    <div class="scheme-desc">参考 Calm · 宁静深邃 · 适合冥想放松功能</div>
+                </div>
+                <div class="scheme-content">
+                    <div class="phone-preview">
+                        <div class="phone-frame">
+                            <div class="notch"></div>
+                            <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+                            <div class="app-header">
+                                <div class="app-greeting">晚上好，李明港 🌙</div>
+                                <div class="app-streak">🔥 连续打卡 7 天</div>
+                            </div>
+                            <div class="app-stats">
+                                <div class="app-stat">
+                                    <div class="stat-icon">💧</div>
+                                    <div class="stat-val">1500ml</div>
+                                    <div class="stat-lbl">今日饮水</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">🏃</div>
+                                    <div class="stat-val">45min</div>
+                                    <div class="stat-lbl">运动时长</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">😊</div>
+                                    <div class="stat-val">良好</div>
+                                    <div class="stat-lbl">今日心情</div>
+                                </div>
+                            </div>
+                            <div class="app-tip">
+                                <div class="tip-title">💡 健康小贴士</div>
+                                <div class="tip-text">夏季养生，宜清淡饮食，多吃瓜果蔬菜</div>
+                            </div>
+                            <div class="app-nav">
+                                <div class="nav-item"><div class="nav-icon">🏠</div>首页</div>
+                                <div class="nav-item"><div class="nav-icon">🍎</div>饮食</div>
+                                <div class="nav-item"><div class="nav-icon">💪</div>运动</div>
+                                <div class="nav-item"><div class="nav-icon">🧠</div>心理</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette">
+                        <div class="palette-title">配色方案</div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#A898C0"></div>
+                            <div class="color-info">
+                                <div class="color-name">主色调</div>
+                                <div class="color-hex">#A898C0</div>
+                                <div class="color-usage">按钮、导航、强调</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#8578A0"></div>
+                            <div class="color-info">
+                                <div class="color-name">深色</div>
+                                <div class="color-hex">#8578A0</div>
+                                <div class="color-usage">文字、标题</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#D4C8E8"></div>
+                            <div class="color-info">
+                                <div class="color-name">浅色</div>
+                                <div class="color-hex">#D4C8E8</div>
+                                <div class="color-usage">卡片背景、装饰</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#F8F5FA"></div>
+                            <div class="color-info">
+                                <div class="color-name">背景</div>
+                                <div class="color-hex">#F8F5FA</div>
+                                <div class="color-usage">页面背景</div>
+                            </div>
+                        </div>
+                        <div class="mood-strip">
+                            <div class="mood-dot" style="background:#D8C0C8">😫</div>
+                            <div class="mood-dot" style="background:#D8CCC8">😔</div>
+                            <div class="mood-dot" style="background:#D4D0CC">😐</div>
+                            <div class="mood-dot" style="background:#C8D4D0">🙂</div>
+                            <div class="mood-dot" style="background:#C0D4D8">😊</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方案 4: 莫兰迪灰绿 -->
+            <div class="scheme s4">
+                <div class="scheme-header">
+                    <div class="scheme-title">🌿 莫兰迪灰绿</div>
+                    <div class="scheme-desc">参考 Samsung Health · 自然平衡 · 适合运动健身功能</div>
+                </div>
+                <div class="scheme-content">
+                    <div class="phone-preview">
+                        <div class="phone-frame">
+                            <div class="notch"></div>
+                            <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+                            <div class="app-header">
+                                <div class="app-greeting">早上好，李明港 👋</div>
+                                <div class="app-streak">🔥 连续打卡 7 天</div>
+                            </div>
+                            <div class="app-stats">
+                                <div class="app-stat">
+                                    <div class="stat-icon">💧</div>
+                                    <div class="stat-val">1500ml</div>
+                                    <div class="stat-lbl">今日饮水</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">🏃</div>
+                                    <div class="stat-val">45min</div>
+                                    <div class="stat-lbl">运动时长</div>
+                                </div>
+                                <div class="app-stat">
+                                    <div class="stat-icon">😊</div>
+                                    <div class="stat-val">良好</div>
+                                    <div class="stat-lbl">今日心情</div>
+                                </div>
+                            </div>
+                            <div class="app-tip">
+                                <div class="tip-title">💡 健康小贴士</div>
+                                <div class="tip-text">夏季养生，宜清淡饮食，多吃瓜果蔬菜</div>
+                            </div>
+                            <div class="app-nav">
+                                <div class="nav-item"><div class="nav-icon">🏠</div>首页</div>
+                                <div class="nav-item"><div class="nav-icon">🍎</div>饮食</div>
+                                <div class="nav-item"><div class="nav-icon">💪</div>运动</div>
+                                <div class="nav-item"><div class="nav-icon">🧠</div>心理</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette">
+                        <div class="palette-title">配色方案</div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#8AA88A"></div>
+                            <div class="color-info">
+                                <div class="color-name">主色调</div>
+                                <div class="color-hex">#8AA88A</div>
+                                <div class="color-usage">按钮、导航、强调</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#6A8A6A"></div>
+                            <div class="color-info">
+                                <div class="color-name">深色</div>
+                                <div class="color-hex">#6A8A6A</div>
+                                <div class="color-usage">文字、标题</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#C4D8C4"></div>
+                            <div class="color-info">
+                                <div class="color-name">浅色</div>
+                                <div class="color-hex">#C4D8C4</div>
+                                <div class="color-usage">卡片背景、装饰</div>
+                            </div>
+                        </div>
+                        <div class="color-row">
+                            <div class="color-swatch" style="background:#F5FAF5"></div>
+                            <div class="color-info">
+                                <div class="color-name">背景</div>
+                                <div class="color-hex">#F5FAF5</div>
+                                <div class="color-usage">页面背景</div>
+                            </div>
+                        </div>
+                        <div class="mood-strip">
+                            <div class="mood-dot" style="background:#D8C4C0">😫</div>
+                            <div class="mood-dot" style="background:#D8D0C4">😔</div>
+                            <div class="mood-dot" style="background:#D4D4C4">😐</div>
+                            <div class="mood-dot" style="background:#C4D4C8">🙂</div>
+                            <div class="mood-dot" style="background:#C0D4D0">😊</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recommend">
+            <h2>💡 设计建议</h2>
+            <div class="recommend-grid">
+                <div class="rec-card">
+                    <div class="rec-title">🎯 首选：莫兰迪蓝绿</div>
+                    <div class="rec-text">最符合健康APP定位，蓝色系给人专业可信赖的感觉，低饱和度处理让视觉更舒适，适合长期使用。</div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-title">✨ 次选：莫兰迪暖杏</div>
+                    <div class="rec-text">温暖治愈感强，特别适合心理健康、冥想功能，给人放松舒适的感觉，女性用户接受度高。</div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-title">🌙 特色：莫兰迪雾紫</div>
+                    <div class="rec-text">独特有辨识度，适合冥想、睡眠功能，深邃宁静的氛围，夜间使用体验佳。</div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-title">🌿 稳妥：莫兰迪灰绿</div>
+                    <div class="rec-text">自然健康感强，绿色代表生机与平衡，运动健身功能契合度高，视觉上清新舒适。</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

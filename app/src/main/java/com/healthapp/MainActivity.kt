@@ -19,8 +19,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.healthapp.navigation.HealthNavHost
 import com.healthapp.ui.theme.HealthAppTheme
+import com.healthapp.ui.theme.ThemeViewModel
 import com.healthapp.util.CrashLogger
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +32,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val savedCrashLog = CrashLogger.getCrashLog(this)
         setContent {
-            HealthAppTheme {
+            val themeViewModel: ThemeViewModel = hiltViewModel()
+            val currentScheme by themeViewModel.currentScheme.collectAsState()
+
+            HealthAppTheme(colorScheme = currentScheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

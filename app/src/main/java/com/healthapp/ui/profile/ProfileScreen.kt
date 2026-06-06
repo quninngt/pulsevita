@@ -14,14 +14,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.healthapp.ui.components.ThemeSelectorCard
+import com.healthapp.ui.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val currentScheme by themeViewModel.currentScheme.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -82,6 +86,14 @@ fun ProfileScreen(
                 bmi = uiState.bmi,
                 height = uiState.user?.height,
                 weight = uiState.user?.weight
+            )
+
+            // Theme Selector
+            ThemeSelectorCard(
+                currentScheme = currentScheme,
+                onSchemeSelected = { scheme ->
+                    themeViewModel.setScheme(scheme)
+                }
             )
         }
     }
