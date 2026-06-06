@@ -10,6 +10,7 @@ import com.healthapp.util.DateUtils
 import com.healthapp.util.FoodKnowledgeProvider
 import com.healthapp.util.HealthChallengeProvider
 import com.healthapp.util.SolarTermUtil
+import com.healthapp.ui.components.generateAchievements
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -97,10 +98,20 @@ class HomeViewModel @Inject constructor(
             val allDates = (waterDates + exerciseDates + moodDates).toSet()
             val dateSet = allDates.map { LocalDate.parse(it, dateFormatter) }.toSet()
             val streak = countConsecutiveDays(allDates)
-            Pair(dateSet, streak)
-        }.onEach { (dateSet, streak) ->
+            Triple(dateSet, streak, Triple(waterDates.size, exerciseDates.size, moodDates.size))
+        }.onEach { (dateSet, streak, counts) ->
+            val achievements = generateAchievements(
+                streakDays = streak,
+                totalWaterDays = counts.first,
+                totalExerciseDays = counts.second,
+                totalMoodDays = counts.third
+            )
             _uiState.update {
-                it.copy(streakDays = streak, streakDates = dateSet)
+                it.copy(
+                    streakDays = streak,
+                    streakDates = dateSet,
+                    achievements = achievements
+                )
             }
         }.launchIn(viewModelScope)
     }

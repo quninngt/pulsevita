@@ -1,5 +1,8 @@
 package com.healthapp.navigation
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -11,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -42,15 +48,49 @@ fun HealthNavHost() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                tonalElevation = 8.dp
+            ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
                 bottomNavItems.forEach { item ->
+                    val selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
+                    
+                    // Animated color for selected state
+                    val animatedTint by animateColorAsState(
+                        targetValue = if (selected) 
+                            MaterialTheme.colorScheme.primary 
+                        else 
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                        animationSpec = tween(300),
+                        label = "navIconTint"
+                    )
+                    
+                    // Animated scale for selected icon
+                    val animatedScale by animateFloatAsState(
+                        targetValue = if (selected) 1.15f else 1f,
+                        animationSpec = tween(300),
+                        label = "navIconScale"
+                    )
+
                     NavigationBarItem(
-                        icon = { Icon(item.icon, contentDescription = item.label) },
-                        label = { Text(item.label) },
-                        selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true,
+                        icon = { 
+                            Icon(
+                                item.icon, 
+                                contentDescription = item.label,
+                                tint = animatedTint,
+                                modifier = Modifier.size((24 * animatedScale).dp)
+                            ) 
+                        },
+                        label = { 
+                            Text(
+                                text = item.label,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                fontSize = if (selected) 12.sp else 11.sp
+                            ) 
+                        },
+                        selected = selected,
                         onClick = {
                             navController.navigate(item.screen.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.healthapp.navigation.Screen
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.AnimatedCircularProgressRing
+import com.healthapp.ui.components.AchievementRow
 import com.healthapp.ui.components.HealthTipFlipCard
 import com.healthapp.ui.components.MoodTrendChart
 import com.healthapp.ui.components.QuickActionCard
@@ -320,7 +321,19 @@ modifier = Modifier.padding(16.dp)
 )
 }
 Spacer(modifier = Modifier.height(20.dp))
-// === 6. Quick Actions ===
+// === 6. 成就徽章 ===
+if (uiState.achievements.isNotEmpty()) {
+SectionHeader(
+icon = Icons.Default.EmojiEvents,
+title = "我的成就"
+)
+Spacer(modifier = Modifier.height(8.dp))
+AchievementRow(
+achievements = uiState.achievements
+)
+Spacer(modifier = Modifier.height(20.dp))
+}
+// === 7. Quick Actions ===
 SectionHeader(
 icon = Icons.Default.EditNote,
 title = "快速记录"
