@@ -29,7 +29,8 @@ data class ExerciseUiState(
     val exerciseNote: String = "",
     val isHealthConnectAvailable: Boolean = false,
     val hasHealthConnectPermissions: Boolean = false,
-    val officeExercises: List<OfficeExercise> = emptyList()
+    val officeExercises: List<OfficeExercise> = emptyList(),
+    val weeklyMinutes: List<Int> = emptyList()
 )
 
 @HiltViewModel
@@ -69,6 +70,12 @@ class ExerciseViewModel @Inject constructor(
     }
 
     private fun loadData() {
+        // Load weekly exercise data
+        viewModelScope.launch {
+            val minutes = exerciseRepository.getLast7DaysMinutes()
+            _uiState.update { it.copy(weeklyMinutes = minutes) }
+        }
+
         // Load from local database
         exerciseRepository.getTodayTotalDuration().onEach { duration ->
             _uiState.update { it.copy(todayDuration = duration) }

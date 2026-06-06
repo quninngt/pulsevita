@@ -21,7 +21,7 @@ data class MentalUiState(
     val recentMoods: List<MoodRecord> = emptyList(),
     val showAddMoodDialog: Boolean = false,
     val selectedMoodLevel: Int = 3,
-    val selectedMoodIcon: String = "😐",
+    val selectedMoodIcon: String = "\ud83d\ude10",
     val moodNote: String = "",
     val isBreathing: Boolean = false,
     val breathingPhase: String = "", // "inhale", "hold", "exhale"
@@ -29,7 +29,8 @@ data class MentalUiState(
     val showBreathingExercise: Boolean = false,
     val emotionTips: List<EmotionTipGroup> = emptyList(),
     val quote: String = "",
-    val quoteFrom: String = ""
+    val quoteFrom: String = "",
+    val weeklyMoodLevels: List<Int?> = emptyList()
 )
 
 @HiltViewModel
@@ -50,6 +51,12 @@ class MentalViewModel @Inject constructor(
     }
 
     private fun loadData() {
+        // Load weekly mood data
+        viewModelScope.launch {
+            val levels = moodRepository.getLast7DaysMoodLevels()
+            _uiState.update { it.copy(weeklyMoodLevels = levels) }
+        }
+
         moodRepository.getRecentRecords(7).onEach { records ->
             _uiState.update { it.copy(recentMoods = records) }
         }.launchIn(viewModelScope)

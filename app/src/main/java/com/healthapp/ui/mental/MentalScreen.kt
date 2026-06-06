@@ -24,6 +24,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthapp.data.local.entity.MoodRecord
 import com.healthapp.ui.DisplayMappings
+import com.healthapp.ui.components.MoodTrendChart
+import com.healthapp.ui.components.PulseAnimation
+import com.healthapp.ui.components.SectionHeader
 import com.healthapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,6 +85,25 @@ fun MentalScreen(
                 }
             }
 
+            // Mood Trend Chart
+            item {
+                SectionHeader(
+                    icon = Icons.Default.TrendingUp,
+                    title = "心情趋势"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    MoodTrendChart(
+                        moodLevels = uiState.weeklyMoodLevels.map { (it ?: 0).toFloat() },
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+
             // Recent Moods
             item {
                 Text(
@@ -110,7 +132,7 @@ fun MentalScreen(
                 }
             }
 
-            // Breathing Exercise
+            // Breathing Exercise with PulseAnimation
             item {
                 Text(
                     text = "呼吸练习",
@@ -134,12 +156,14 @@ fun MentalScreen(
                             .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
-                            Icons.Default.Air,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
+                        PulseAnimation {
+                            Icon(
+                                Icons.Default.Air,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "4-7-8 呼吸法",
@@ -174,7 +198,7 @@ fun MentalScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "“${uiState.quote}”",
+                                text = "\u201C${uiState.quote}\u201D",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -377,39 +401,41 @@ fun BreathingExerciseDialog(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (isBreathing) {
-                    // Breathing Animation
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                            .background(
-                                when (phase) {
-                                    "inhale" -> MaterialTheme.colorScheme.primary
-                                    "hold" -> MaterialTheme.colorScheme.secondary
-                                    "exhale" -> MaterialTheme.colorScheme.tertiary
-                                    else -> MaterialTheme.colorScheme.surfaceVariant
-                                }
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = when (phase) {
-                                    "inhale" -> "吸气"
-                                    "hold" -> "屏息"
-                                    "exhale" -> "呼气"
-                                    else -> ""
-                                },
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "${count}秒",
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                    // Breathing Animation with PulseAnimation
+                    PulseAnimation {
+                        Box(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    when (phase) {
+                                        "inhale" -> MaterialTheme.colorScheme.primary
+                                        "hold" -> MaterialTheme.colorScheme.secondary
+                                        "exhale" -> MaterialTheme.colorScheme.tertiary
+                                        else -> MaterialTheme.colorScheme.surfaceVariant
+                                    }
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = when (phase) {
+                                        "inhale" -> "吸气"
+                                        "hold" -> "屏息"
+                                        "exhale" -> "呼气"
+                                        else -> ""
+                                    },
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "${count}秒",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
 

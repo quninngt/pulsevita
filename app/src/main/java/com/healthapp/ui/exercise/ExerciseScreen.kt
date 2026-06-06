@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthapp.ui.DisplayMappings
+import com.healthapp.ui.components.AnimatedNumber
+import com.healthapp.ui.components.ExerciseTrendChart
+import com.healthapp.ui.components.SectionHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +44,7 @@ fun ExerciseScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Exercise Overview Card
+            // Exercise Overview Card with AnimatedNumber
             item {
                 ExerciseOverviewCard(
                     todayDuration = uiState.todayDuration,
@@ -49,6 +52,25 @@ fun ExerciseScreen(
                     todaySteps = uiState.todaySteps,
                     stepsGoal = uiState.stepsGoal
                 )
+            }
+
+            // Weekly Exercise Trend Chart
+            item {
+                SectionHeader(
+                    icon = Icons.Default.TrendingUp,
+                    title = "本周运动趋势"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    ExerciseTrendChart(
+                        dailyMinutes = uiState.weeklyMinutes,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
 
             // Quick Add Buttons
@@ -186,11 +208,9 @@ fun ExerciseOverviewCard(
                         strokeWidth = 6.dp
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "${todayDuration}分钟",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    AnimatedNumber(
+                        targetValue = todayDuration,
+                        suffix = "分钟"
                     )
                     Text(
                         text = "目标${durationGoal}分钟",
@@ -208,11 +228,9 @@ fun ExerciseOverviewCard(
                         strokeWidth = 6.dp
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "${todaySteps}步",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    AnimatedNumber(
+                        targetValue = todaySteps.toInt(),
+                        suffix = "步"
                     )
                     Text(
                         text = "目标${stepsGoal}步",
