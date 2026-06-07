@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.healthapp.ui.theme.PulseVitaTheme
 import androidx.compose.ui.unit.dp
 
 /**
@@ -51,7 +52,7 @@ fun NutritionOverviewCard(
                     label = "蛋白质",
                     current = protein,
                     goal = proteinGoal,
-                    color = Color(0xFF4CAF50), // 绿色
+                    color = PulseVitaTheme.currentScheme().chartGreen,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -60,7 +61,7 @@ fun NutritionOverviewCard(
                     label = "碳水",
                     current = carbs,
                     goal = carbsGoal,
-                    color = Color(0xFF2196F3), // 蓝色
+                    color = PulseVitaTheme.currentScheme().chartBlue,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -69,7 +70,7 @@ fun NutritionOverviewCard(
                     label = "脂肪",
                     current = fat,
                     goal = fatGoal,
-                    color = Color(0xFFFF9800), // 橙色
+                    color = PulseVitaTheme.currentScheme().chartOrange,
                     modifier = Modifier.weight(1f)
                 )
             }

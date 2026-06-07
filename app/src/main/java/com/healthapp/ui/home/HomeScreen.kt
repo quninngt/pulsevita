@@ -34,9 +34,7 @@ import com.healthapp.ui.components.StreakCalendar
 import com.healthapp.ui.components.WaterTrendChart
 import com.healthapp.ui.components.ExerciseTrendChart
 import com.healthapp.ui.components.WeeklyOverviewCard
-import com.healthapp.ui.theme.BrandGreen
-import com.healthapp.ui.theme.GreenHealthy
-import com.healthapp.ui.theme.WaterBlue
+import com.healthapp.ui.theme.PulseVitaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -218,9 +216,9 @@ horizontalArrangement = Arrangement.SpaceEvenly
 RingMetric(
 progress = (uiState.water.amount.toFloat() / uiState.water.goal).coerceIn(0f, 1f),
 icon = Icons.Default.WaterDrop,
-progressColor = WaterBlue,
-trackColor = WaterBlue.copy(alpha = 0.15f),
-iconTint = WaterBlue,
+progressColor = PulseVitaTheme.currentScheme().chartBlue,
+trackColor = PulseVitaTheme.currentScheme().chartBlue.copy(alpha = 0.15f),
+iconTint = PulseVitaTheme.currentScheme().chartBlue,
 value = "${uiState.water.amount}ml",
 label = "饮水",
 subtitle = "目标${uiState.water.goal}ml"
@@ -229,9 +227,9 @@ subtitle = "目标${uiState.water.goal}ml"
 RingMetric(
 progress = (uiState.exercise.duration.toFloat() / uiState.exercise.goal).coerceIn(0f, 1f),
 icon = Icons.Default.DirectionsWalk,
-progressColor = BrandGreen,
-trackColor = BrandGreen.copy(alpha = 0.15f),
-iconTint = BrandGreen,
+progressColor = PulseVitaTheme.currentScheme().chartGreen,
+trackColor = PulseVitaTheme.currentScheme().chartGreen.copy(alpha = 0.15f),
+iconTint = PulseVitaTheme.currentScheme().chartGreen,
 value = "${uiState.exercise.duration}分钟",
 label = "运动",
 subtitle = "目标${uiState.exercise.goal}分钟"
@@ -243,9 +241,9 @@ uiState.mood.level!! / 5f
 RingMetric(
 progress = moodProgress,
 icon = Icons.Default.Psychology,
-progressColor = GreenHealthy,
+progressColor = PulseVitaTheme.currentScheme().success,
 trackColor = MaterialTheme.colorScheme.tertiaryContainer,
-iconTint = GreenHealthy,
+iconTint = PulseVitaTheme.currentScheme().success,
 value = if (uiState.mood.level != null) {
 DisplayMappings.moodLevelName(uiState.mood.level!!)
 } else "未记录",
@@ -362,24 +360,24 @@ horizontalArrangement = Arrangement.spacedBy(12.dp)
 QuickActionCard(
 icon = Icons.Default.WaterDrop,
 label = "喝水",
-iconBackground = WaterBlue.copy(alpha = 0.15f),
-iconTint = WaterBlue,
+iconBackground = PulseVitaTheme.currentScheme().chartBlue.copy(alpha = 0.15f),
+iconTint = PulseVitaTheme.currentScheme().chartBlue,
 onClick = { navController.navigate(Screen.Diet.route) },
 modifier = Modifier.weight(1f)
 )
 QuickActionCard(
 icon = Icons.Default.FitnessCenter,
 label = "运动",
-iconBackground = BrandGreen.copy(alpha = 0.15f),
-iconTint = BrandGreen,
+iconBackground = PulseVitaTheme.currentScheme().chartGreen.copy(alpha = 0.15f),
+iconTint = PulseVitaTheme.currentScheme().chartGreen,
 onClick = { navController.navigate(Screen.Exercise.route) },
 modifier = Modifier.weight(1f)
 )
 QuickActionCard(
 icon = Icons.Default.Mood,
 label = "心情",
-iconBackground = GreenHealthy.copy(alpha = 0.15f),
-iconTint = GreenHealthy,
+iconBackground = PulseVitaTheme.currentScheme().success.copy(alpha = 0.15f),
+iconTint = PulseVitaTheme.currentScheme().success,
 onClick = { navController.navigate(Screen.Mental.route) },
 modifier = Modifier.weight(1f)
 )
@@ -408,7 +406,7 @@ modifier = Modifier
 .padding(horizontal = 0.dp)
 ) {
 Surface(
-color = GreenHealthy,
+color = PulseVitaTheme.currentScheme().success,
 modifier = Modifier.fillMaxSize()
 ) {}
 }
@@ -502,7 +500,7 @@ modifier = Modifier
 .height(3.dp)
 ) {
 Surface(
-color = GreenHealthy,
+color = PulseVitaTheme.currentScheme().success,
 modifier = Modifier.fillMaxSize()
 ) {}
 }
@@ -517,7 +515,7 @@ color = MaterialTheme.colorScheme.onSurface
 Spacer(modifier = Modifier.width(10.dp))
 Surface(
 shape = RoundedCornerShape(6.dp),
-color = foodPropertyColor(uiState.extras.foodProperty)
+color = foodPropertyColor(uiState.extras.foodProperty, PulseVitaTheme.currentScheme())
 ) {
 Text(
 text = uiState.extras.foodProperty,
@@ -564,14 +562,14 @@ Spacer(modifier = Modifier.height(16.dp))
 } // Box
 } // Scaffold
 }
-private fun foodPropertyColor(property: String): Color {
+private fun foodPropertyColor(property: String, scheme: com.healthapp.ui.theme.MutedColorScheme): Color {
 return when (property) {
-"热性" -> Color(0xFFD32F2F)
-"温性" -> Color(0xFFFF5722)
-"平性" -> Color(0xFF4CAF50)
-"凉性" -> Color(0xFF2196F3)
-"寒性" -> Color(0xFF1565C0)
-else -> Color.Gray
+"热性" -> scheme.error
+"温性" -> scheme.chartOrange
+"平性" -> scheme.success
+"凉性" -> scheme.chartBlue
+"寒性" -> scheme.primaryDark
+else -> scheme.textSecondary
 }
 }
 @Composable

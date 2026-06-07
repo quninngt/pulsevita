@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.healthapp.ui.theme.*
+import com.healthapp.ui.theme.PulseVitaTheme
 
 /**
  * 周概览卡片组件
@@ -58,7 +59,7 @@ fun WeeklyOverviewCard(
                     label = "饮水",
                     days = waterDays,
                     trend = waterTrend,
-                    color = WaterBlue,
+                    color = PulseVitaTheme.currentScheme().chartBlue,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -68,7 +69,7 @@ fun WeeklyOverviewCard(
                     label = "运动",
                     days = exerciseDays,
                     trend = exerciseTrend,
-                    color = BrandGreen,
+                    color = PulseVitaTheme.currentScheme().chartGreen,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -78,7 +79,7 @@ fun WeeklyOverviewCard(
                     label = "心情",
                     days = moodDays,
                     trend = moodTrend,
-                    color = GreenHealthy,
+                    color = PulseVitaTheme.currentScheme().success,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -88,7 +89,7 @@ fun WeeklyOverviewCard(
                     label = "饮食",
                     days = dietDays,
                     trend = dietTrend,
-                    color = Color(0xFFFF9500),
+                    color = PulseVitaTheme.currentScheme().chartOrange,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -150,9 +151,9 @@ private fun WeeklyStatItem(
                     text = trend,
                     style = MaterialTheme.typography.bodySmall,
                     color = when (trend) {
-                        "↑" -> Color(0xFF34C759)
-                        "↓" -> Color(0xFFFF3B30)
-                        else -> Color(0xFF8E8E93)
+                        "↑" -> PulseVitaTheme.currentScheme().success
+                        "↓" -> PulseVitaTheme.currentScheme().error
+                        else -> PulseVitaTheme.currentScheme().textSecondary
                     }
                 )
             }

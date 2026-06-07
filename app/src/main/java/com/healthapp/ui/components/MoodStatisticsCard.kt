@@ -8,10 +8,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.healthapp.ui.theme.*
+import com.healthapp.ui.theme.PulseVitaTheme
 
 /**
  * 心情统计卡片
@@ -58,9 +58,9 @@ fun MoodStatisticsCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = when {
-                        weeklyAverage >= 4.0 -> Color(0xFF34C759)
-                        weeklyAverage >= 3.0 -> Color(0xFFFF9500)
-                        else -> Color(0xFFFF3B30)
+                        weeklyAverage >= 4.0 -> PulseVitaTheme.currentScheme().success
+                        weeklyAverage >= 3.0 -> PulseVitaTheme.currentScheme().warning
+                        else -> PulseVitaTheme.currentScheme().error
                     }
                 )
             }
@@ -114,9 +114,9 @@ fun MoodStatisticsCard(
                     },
                     contentDescription = trend,
                     tint = when (trend) {
-                        "improving" -> Color(0xFF34C759)
-                        "declining" -> Color(0xFFFF3B30)
-                        else -> Color(0xFF8E8E93)
+                        "improving" -> PulseVitaTheme.currentScheme().success
+                        "declining" -> PulseVitaTheme.currentScheme().error
+                        else -> PulseVitaTheme.currentScheme().textSecondary
                     },
                     modifier = Modifier.size(20.dp)
                 )
@@ -129,9 +129,9 @@ fun MoodStatisticsCard(
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = when (trend) {
-                        "improving" -> Color(0xFF34C759)
-                        "declining" -> Color(0xFFFF3B30)
-                        else -> Color(0xFF8E8E93)
+                        "improving" -> PulseVitaTheme.currentScheme().success
+                        "declining" -> PulseVitaTheme.currentScheme().error
+                        else -> PulseVitaTheme.currentScheme().textSecondary
                     }
                 )
             }

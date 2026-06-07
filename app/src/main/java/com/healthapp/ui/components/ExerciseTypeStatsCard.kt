@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.healthapp.ui.theme.*
+import com.healthapp.ui.theme.PulseVitaTheme
 
 /**
  * 运动类型统计卡片
@@ -52,7 +53,7 @@ fun ExerciseTypeStatsCard(
                     icon = Icons.Default.DirectionsWalk,
                     label = "步行",
                     count = walkingCount,
-                    color = BrandGreen,
+                    color = PulseVitaTheme.currentScheme().chartGreen,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -61,7 +62,7 @@ fun ExerciseTypeStatsCard(
                     icon = Icons.Default.Desk,
                     label = "办公运动",
                     count = officeExerciseCount,
-                    color = Color(0xFF2196F3), // 蓝色
+                    color = PulseVitaTheme.currentScheme().chartBlue,
                     modifier = Modifier.weight(1f)
                 )
                 
@@ -70,7 +71,7 @@ fun ExerciseTypeStatsCard(
                     icon = Icons.Default.SelfImprovement,
                     label = "瑜伽",
                     count = yogaCount,
-                    color = Color(0xFF9C27B0), // 紫色
+                    color = PulseVitaTheme.currentScheme().chartPurple,
                     modifier = Modifier.weight(1f)
                 )
             }

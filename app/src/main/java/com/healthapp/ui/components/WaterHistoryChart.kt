@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.healthapp.ui.theme.WaterBlue
+import com.healthapp.ui.theme.PulseVitaTheme
 
 /**
  * 饮水历史图表组件
@@ -58,6 +58,7 @@ fun WaterHistoryChart(
                 }
             } else {
                 // 图表
+                val scheme = PulseVitaTheme.currentScheme()
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -74,7 +75,7 @@ fun WaterHistoryChart(
                         // 绘制目标线
                         val goalY = height * (1 - goalAmount / maxValue)
                         drawLine(
-                            color = Color.Gray.copy(alpha = 0.5f),
+                            color = scheme.textSecondary.copy(alpha = 0.5f),
                             start = Offset(0f, goalY),
                             end = Offset(width, goalY),
                             strokeWidth = 2f
@@ -87,7 +88,7 @@ fun WaterHistoryChart(
                             val y = height - barHeight
                             
                             drawRect(
-                                color = WaterBlue,
+                                color = scheme.chartBlue,
                                 topLeft = Offset(x, y),
                                 size = Size(barWidth, barHeight)
                             )
@@ -98,7 +99,7 @@ fun WaterHistoryChart(
                     Text(
                         text = "目标${goalAmount}ml",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray,
+                        color = scheme.textSecondary,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(top = 4.dp, end = 4.dp)

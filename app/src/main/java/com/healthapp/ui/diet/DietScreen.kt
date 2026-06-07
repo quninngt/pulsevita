@@ -22,7 +22,7 @@ import com.healthapp.ui.components.AnimatedNumber
 import com.healthapp.ui.components.PulseAnimation
 import com.healthapp.ui.components.NutritionOverviewCard
 import com.healthapp.ui.components.WaterHistoryChart
-import com.healthapp.ui.theme.WaterBlue
+import com.healthapp.ui.theme.PulseVitaTheme
 import com.healthapp.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,8 +149,8 @@ fun WaterTrackingCard(
                 CircularProgressIndicator(
                     progress = progress,
                     modifier = Modifier.size(120.dp),
-                    color = WaterBlue,
-                    trackColor = WaterBlue.copy(alpha = 0.2f),
+                    color = PulseVitaTheme.currentScheme().chartBlue,
+                    trackColor = PulseVitaTheme.currentScheme().chartBlue.copy(alpha = 0.2f),
                     strokeWidth = 8.dp
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -188,7 +188,7 @@ fun WaterAddButton(amount: Int, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(containerColor = WaterBlue)
+        colors = ButtonDefaults.buttonColors(containerColor = PulseVitaTheme.currentScheme().chartBlue)
     ) {
         Text("+${amount}ml")
     }

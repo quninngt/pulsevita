@@ -29,6 +29,7 @@ import com.healthapp.ui.components.MoodStatisticsCard
 import com.healthapp.ui.components.PulseAnimation
 import com.healthapp.ui.components.SectionHeader
 import com.healthapp.ui.theme.*
+import com.healthapp.ui.theme.PulseVitaTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -438,13 +439,23 @@ fun BreathingExerciseDialog(
                                     },
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = when (phase) {
+                                        "inhale" -> MaterialTheme.colorScheme.onPrimary
+                                        "hold" -> MaterialTheme.colorScheme.onSecondary
+                                        "exhale" -> MaterialTheme.colorScheme.onTertiary
+                                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
                                 )
                                 Text(
                                     text = "${count}秒",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = when (phase) {
+                                        "inhale" -> MaterialTheme.colorScheme.onPrimary
+                                        "hold" -> MaterialTheme.colorScheme.onSecondary
+                                        "exhale" -> MaterialTheme.colorScheme.onTertiary
+                                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
                                 )
                             }
                         }
