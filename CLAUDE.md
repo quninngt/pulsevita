@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PulseVita - Android health tracking app with TCM wellness features. Tracks water intake, exercise, mood, diet and provides seasonal health advice. Full Chinese-language UI with localized English name.
 
-**Current Version**: v1.4.1 (2026-06-06) — Stable, tested on OnePlus MT2110 (Android 12)
+**Current Version**: v2.0.1 (2026-06-07) — UI全面重设计 + 莫兰迪主题系统
 
 ## Build & Test Commands
 
@@ -104,7 +104,15 @@ Bottom navigation with 4 tabs: Home, Diet, Exercise, Mental. Profile is accessed
 
 ### Theme
 
-Orange/black color scheme. Colors in `ui/theme/Color.kt` include brand orange variants, mood colors (1-5 scale mapped to red→blue), water blue, and status colors (error/warning/success). Dynamic color disabled to maintain brand consistency. App name: "健康助手".
+4 套莫兰迪低饱和度配色方案（蓝绿/暖杏/雾紫/灰绿），通过 `MutedColorScheme` 枚举定义。
+
+- `MutedColorSchemes.kt` — 4 套方案定义（主色/背景/文字/功能色/图表色/心情色，每套 ~20 个颜色字段）
+- `ThemeManager.kt` — DataStore 持久化主题选择
+- `ThemeViewModel.kt` — 主题状态管理，Hilt 注入
+- `Theme.kt` — `PulseVitaTheme.currentScheme()` 桥接 Material 3，`createLightColorScheme()`/`createDarkColorScheme()`
+- ProfileScreen 中 `ThemeSelectorCard` 提供主题切换入口
+
+**重要**: 所有 UI 组件必须通过 `PulseVitaTheme.currentScheme()` 获取颜色，禁止硬编码 `Color(0x...)`。Canvas 内部不能调用 @Composable 函数，需在外部获取颜色变量后传入。
 
 ### Display Mappings (`ui/DisplayMappings.kt`)
 
@@ -118,7 +126,7 @@ Unit tests in `app/src/test/` with backtick-named test methods (Spock-style). Te
 - `ConstantsTest` — constant value validation (8 tests)
 - `SolarTermUtilTest` — solar term calculation (3 tests)
 
-**Total: 30 unit tests, 100% pass rate**
+**Total: 40 unit tests, 100% pass rate**
 
 ## Health Connect Integration
 
