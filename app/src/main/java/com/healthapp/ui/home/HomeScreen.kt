@@ -390,48 +390,106 @@ icon = Icons.Default.EmojiEvents,
 title = "今日挑战"
 )
 Spacer(modifier = Modifier.height(8.dp))
+val challengeScheme = PulseVitaTheme.currentScheme()
 Card(
 modifier = Modifier
 .fillMaxWidth()
 .padding(horizontal = 16.dp),
-shape = RoundedCornerShape(16.dp),
-elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f))
+shape = RoundedCornerShape(20.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+colors = CardDefaults.cardColors(
+containerColor = challengeScheme.primaryContainer
+)
 ) {
-// Accent strip
+Box(modifier = Modifier.fillMaxWidth()) {
+// 背景装饰圆
 Box(
 modifier = Modifier
-.fillMaxWidth()
-.height(3.dp)
-.padding(horizontal = 0.dp)
+.size(120.dp)
+.align(Alignment.TopEnd)
+.offset(x = 30.dp, y = (-20).dp)
 ) {
 Surface(
-color = PulseVitaTheme.currentScheme().success,
-modifier = Modifier.fillMaxSize()
+modifier = Modifier.fillMaxSize(),
+shape = CircleShape,
+color = challengeScheme.primary.copy(alpha = 0.08f)
 ) {}
 }
+// 内容
+Column(
+modifier = Modifier
+.fillMaxWidth()
+.padding(20.dp)
+) {
 Row(
-modifier = Modifier.padding(16.dp),
 verticalAlignment = Alignment.CenterVertically
 ) {
+// 图标容器
+Surface(
+shape = RoundedCornerShape(14.dp),
+color = challengeScheme.primary.copy(alpha = 0.15f),
+modifier = Modifier.size(52.dp)
+) {
+Box(contentAlignment = Alignment.Center) {
 Text(
 text = uiState.extras.challengeIcon,
 style = MaterialTheme.typography.headlineMedium
 )
-Spacer(modifier = Modifier.width(12.dp))
+}
+}
+Spacer(modifier = Modifier.width(16.dp))
 Column(modifier = Modifier.weight(1f)) {
 Text(
-text = uiState.extras.challengeTitle,
-style = MaterialTheme.typography.titleSmall,
-fontWeight = FontWeight.Bold,
-color = MaterialTheme.colorScheme.onTertiaryContainer
+text = "今日挑战",
+style = MaterialTheme.typography.labelMedium,
+color = challengeScheme.primary,
+fontWeight = FontWeight.SemiBold
 )
+Spacer(modifier = Modifier.height(2.dp))
+Text(
+text = uiState.extras.challengeTitle,
+style = MaterialTheme.typography.titleMedium,
+fontWeight = FontWeight.Bold,
+color = challengeScheme.textPrimary
+)
+}
+}
+Spacer(modifier = Modifier.height(14.dp))
+// 描述区域
+Surface(
+shape = RoundedCornerShape(12.dp),
+color = challengeScheme.surface.copy(alpha = 0.6f),
+modifier = Modifier.fillMaxWidth()
+) {
 Text(
 text = uiState.extras.challengeDesc,
-style = MaterialTheme.typography.bodySmall,
-color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f),
-maxLines = 2
+style = MaterialTheme.typography.bodyMedium,
+color = challengeScheme.textSecondary,
+modifier = Modifier.padding(14.dp),
+lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
 )
+}
+Spacer(modifier = Modifier.height(14.dp))
+// 底部行动提示
+Row(
+modifier = Modifier.fillMaxWidth(),
+horizontalArrangement = Arrangement.End,
+verticalAlignment = Alignment.CenterVertically
+) {
+Text(
+text = "开始挑战",
+style = MaterialTheme.typography.labelLarge,
+color = challengeScheme.primary,
+fontWeight = FontWeight.SemiBold
+)
+Spacer(modifier = Modifier.width(4.dp))
+Icon(
+imageVector = Icons.Default.KeyboardArrowRight,
+contentDescription = null,
+tint = challengeScheme.primary,
+modifier = Modifier.size(18.dp)
+)
+}
 }
 }
 }
