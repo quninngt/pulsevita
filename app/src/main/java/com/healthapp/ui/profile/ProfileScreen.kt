@@ -1,5 +1,6 @@
 package com.healthapp.ui.profile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,11 +11,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.healthapp.navigation.Screen
 import com.healthapp.ui.components.ThemeSelectorCard
+import com.healthapp.ui.theme.PulseVitaTheme
 import com.healthapp.ui.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,6 +99,118 @@ fun ProfileScreen(
                 onSchemeSelected = { scheme ->
                     themeViewModel.setScheme(scheme)
                 }
+            )
+
+            // Feature entry cards
+            FeatureEntryCards(navController = navController)
+        }
+    }
+}
+
+/**
+ * 功能入口卡片：优化计划、健康报告、成就系统
+ */
+@Composable
+private fun FeatureEntryCards(navController: NavController) {
+    val scheme = PulseVitaTheme.currentScheme()
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "更多功能",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+
+            FeatureEntryItem(
+                icon = Icons.Default.Assignment,
+                title = "优化计划",
+                description = "查看和管理你的健康优化计划",
+                iconTint = scheme.primary,
+                onClick = { navController.navigate(Screen.Plan.route) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FeatureEntryItem(
+                icon = Icons.Default.Assessment,
+                title = "健康报告",
+                description = "查看每周和每月的健康分析报告",
+                iconTint = scheme.chartGreen,
+                onClick = { navController.navigate(Screen.Report.route) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FeatureEntryItem(
+                icon = Icons.Default.EmojiEvents,
+                title = "成就系统",
+                description = "查看已解锁的成就和徽章",
+                iconTint = scheme.chartOrange,
+                onClick = { navController.navigate(Screen.AchievementDetail.route) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FeatureEntryItem(
+    icon: ImageVector,
+    title: String,
+    description: String,
+    iconTint: Color,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = iconTint.copy(alpha = 0.12f),
+                modifier = Modifier.size(40.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        icon,
+                        contentDescription = title,
+                        tint = iconTint,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                Icons.Default.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
         }
     }

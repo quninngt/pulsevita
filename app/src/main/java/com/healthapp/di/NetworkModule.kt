@@ -27,12 +27,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
         })
+        .addInterceptor(authInterceptor)
         .build()
 
     // ---- Retrofit instances (one per base URL) ----
@@ -78,6 +79,21 @@ object NetworkModule {
             .build()
 
     // ---- Service instances ----
+    @Provides
+    @Singleton
+    @Named("server")
+    fun provideServerRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("http://82.156.72.247:8080/")
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideServerApiService(@Named("server") retrofit: Retrofit): ServerApiService =
+        retrofit.create(ServerApiService::class.java)
+
 
     @Provides
     @Singleton

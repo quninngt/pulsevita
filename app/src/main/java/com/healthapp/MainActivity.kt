@@ -20,7 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.healthapp.navigation.AuthNavHost
 import com.healthapp.navigation.HealthNavHost
+import com.healthapp.ui.auth.AuthViewModel
 import com.healthapp.ui.theme.HealthAppTheme
 import com.healthapp.ui.theme.ThemeViewModel
 import com.healthapp.util.CrashLogger
@@ -43,11 +45,23 @@ class MainActivity : ComponentActivity() {
                     if (savedCrashLog != null) {
                         CrashLogScreen(savedCrashLog)
                     } else {
-                        HealthNavHost()
+                        AppContent()
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun AppContent() {
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val authState by authViewModel.uiState.collectAsState()
+
+    if (authState.isLoggedIn) {
+        HealthNavHost()
+    } else {
+        AuthNavHost(onLoginSuccess = { /* Auth state will update via flow */ })
     }
 }
 

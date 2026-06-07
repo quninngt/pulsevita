@@ -17,17 +17,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.healthapp.ui.auth.AuthViewModel
+import com.healthapp.ui.auth.LoginScreen
+import com.healthapp.ui.auth.RegisterScreen
 import com.healthapp.ui.diet.DietScreen
 import com.healthapp.ui.exercise.ExerciseScreen
 import com.healthapp.ui.home.HomeScreen
 import com.healthapp.ui.mental.MentalScreen
+import com.healthapp.ui.plan.PlanScreen
 import com.healthapp.ui.profile.ProfileScreen
+import com.healthapp.ui.report.ReportScreen
 
 data class BottomNavItem(
     val screen: Screen,
@@ -42,6 +48,35 @@ val bottomNavItems = listOf(
     BottomNavItem(Screen.Mental, "心理", Icons.Default.Psychology)
 )
 
+/**
+ * Auth navigation graph for login/register flow.
+ */
+@Composable
+fun AuthNavHost(onLoginSuccess: () -> Unit) {
+    val navController = rememberNavController()
+    val authViewModel: AuthViewModel = hiltViewModel()
+
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
+        composable(Screen.Login.route) {
+            LoginScreen(
+                onNavigateToRegister = { navController.navigate(Screen.Register.route) },
+                onLoginSuccess = onLoginSuccess,
+                viewModel = authViewModel
+            )
+        }
+        composable(Screen.Register.route) {
+            RegisterScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onRegisterSuccess = onLoginSuccess,
+                viewModel = authViewModel
+            )
+        }
+    }
+}
+
+/**
+ * Main app navigation graph (requires login).
+ */
 @Composable
 fun HealthNavHost() {
     val navController = rememberNavController()
@@ -56,17 +91,17 @@ fun HealthNavHost() {
 
                 bottomNavItems.forEach { item ->
                     val selected = currentDestination?.hierarchy?.any { it.route == item.screen.route } == true
-                    
+
                     // Animated color for selected state
                     val animatedTint by animateColorAsState(
-                        targetValue = if (selected) 
-                            MaterialTheme.colorScheme.primary 
-                        else 
+                        targetValue = if (selected)
+                            MaterialTheme.colorScheme.primary
+                        else
                             MaterialTheme.colorScheme.onSurfaceVariant,
                         animationSpec = tween(300),
                         label = "navIconTint"
                     )
-                    
+
                     // Animated scale for selected icon
                     val animatedScale by animateFloatAsState(
                         targetValue = if (selected) 1.15f else 1f,
@@ -75,20 +110,20 @@ fun HealthNavHost() {
                     )
 
                     NavigationBarItem(
-                        icon = { 
+                        icon = {
                             Icon(
-                                item.icon, 
+                                item.icon,
                                 contentDescription = item.label,
                                 tint = animatedTint,
                                 modifier = Modifier.size((24 * animatedScale).dp)
-                            ) 
+                            )
                         },
-                        label = { 
+                        label = {
                             Text(
                                 text = item.label,
                                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                                 fontSize = if (selected) 12.sp else 11.sp
-                            ) 
+                            )
                         },
                         selected = selected,
                         onClick = {
@@ -124,6 +159,12 @@ fun HealthNavHost() {
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(navController = navController)
+            }
+            composable(Screen.Plan.route) {
+                PlanScreen(navController = navController)
+            }
+            composable(Screen.Report.route) {
+                ReportScreen(navController = navController)
             }
         }
     }
