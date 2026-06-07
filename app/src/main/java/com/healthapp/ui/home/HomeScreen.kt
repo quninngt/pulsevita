@@ -33,6 +33,7 @@ import com.healthapp.ui.components.SectionHeader
 import com.healthapp.ui.components.StreakCalendar
 import com.healthapp.ui.components.WaterTrendChart
 import com.healthapp.ui.components.ExerciseTrendChart
+import com.healthapp.ui.components.WeeklyOverviewCard
 import com.healthapp.ui.theme.BrandGreen
 import com.healthapp.ui.theme.GreenHealthy
 import com.healthapp.ui.theme.WaterBlue
@@ -254,7 +255,20 @@ subtitle = uiState.mood.icon
 }
 }
 Spacer(modifier = Modifier.height(20.dp))
-// === 4. 打卡日历 ===
+// === 4. 周概览卡片 ===
+WeeklyOverviewCard(
+waterDays = uiState.weeklyWaterDays,
+exerciseDays = uiState.weeklyExerciseDays,
+moodDays = uiState.weeklyMoodDays,
+dietDays = uiState.weeklyDietDays,
+waterTrend = uiState.weeklyWaterTrend,
+exerciseTrend = uiState.weeklyExerciseTrend,
+moodTrend = uiState.weeklyMoodTrend,
+dietTrend = uiState.weeklyDietTrend,
+modifier = Modifier.padding(horizontal = 16.dp)
+)
+Spacer(modifier = Modifier.height(20.dp))
+// === 5. 打卡日历 ===
 SectionHeader(
 icon = Icons.Default.CalendarMonth,
 title = "打卡日历"
@@ -273,7 +287,7 @@ modifier = Modifier.padding(12.dp)
 )
 }
 Spacer(modifier = Modifier.height(20.dp))
-// === 5. 健康趋势图 ===
+// === 6. 健康趋势图 ===
 SectionHeader(
 icon = Icons.Default.TrendingUp,
 title = "健康趋势"

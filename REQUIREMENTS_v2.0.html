@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseVita v2.0 需求文档</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 10px; color: #2C2C2C; font-size: 24px; }
+        .subtitle { text-align: center; color: #8E8E93; margin-bottom: 30px; font-size: 14px; }
+        .section { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .section-title { font-size: 18px; font-weight: 600; color: #2C2C2C; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #7AADAD; }
+        .feature { margin-bottom: 15px; padding: 12px; background: #F8F9FA; border-radius: 8px; }
+        .feature-title { font-size: 14px; font-weight: 600; color: #2C2C2C; margin-bottom: 5px; }
+        .feature-desc { font-size: 12px; color: #666; }
+        .priority { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 8px; }
+        .p0 { background: #FFE0E0; color: #C47A7A; }
+        .p1 { background: #E0F0E0; color: #7AADAD; }
+        .p2 { background: #E0E0F0; color: #7A7AAD; }
+        .plan { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .plan-item { padding: 15px; background: #F8F9FA; border-radius: 8px; }
+        .plan-title { font-size: 14px; font-weight: 600; color: #2C2C2C; margin-bottom: 5px; }
+        .plan-time { font-size: 12px; color: #7AADAD; margin-bottom: 8px; }
+        .plan-content { font-size: 12px; color: #666; }
+        .component-table { width: 100%; border-collapse: collapse; }
+        .component-table th, .component-table td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; font-size: 12px; }
+        .component-table th { background: #F8F9FA; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 PulseVita v2.0 需求文档</h1>
+        <p class="subtitle">首页 & 三大功能页面全面优化</p>
+
+        <div class="section">
+            <div class="section-title">🎯 设计原则</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                <div class="feature">
+                    <div class="feature-title">简洁优先</div>
+                    <div class="feature-desc">减少视觉噪音，突出核心信息</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">数据驱动</div>
+                    <div class="feature-desc">用数据指导用户行为</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">正向激励</div>
+                    <div class="feature-desc">成就系统、进度可视化</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">一致性</div>
+                    <div class="feature-desc">统一的视觉语言和交互模式</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🏠 首页重新设计（7个功能）</div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-01: 顶部问候区 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">显示个性化问候语、用户名、连续打卡天数</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-02: 环境信息条 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">左侧：天气图标 + 温度 | 右侧：节气图标 + 养生建议</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-03: 核心数据卡片 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">饮水进度、运动时长、今日心情的环形进度条展示</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-04: 周概览卡片 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">四宫格展示本周各维度健康数据：💧饮水 | 🏃运动 | 😊心情 | 🍎饮食</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-05: 健康贴士卡片 <span class="priority p1">P1</span></div>
+                <div class="feature-desc">卡片式设计，支持翻转动画，每日自动更新</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-06: 成就徽章区 <span class="priority p1">P1</span></div>
+                <div class="feature-desc">横向滚动展示已获得的成就徽章</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-HOME-07: 快速操作区 <span class="priority p2">P2</span></div>
+                <div class="feature-desc">快速记录饮水/运动/心情，浮动操作按钮</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🍽️ 饮食页面优化（5个功能）</div>
+            <div class="feature">
+                <div class="feature-title">FR-DIET-01: 饮水追踪卡片 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">环形进度条 + 快速添加按钮：+100ml | +250ml | +500ml</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-DIET-02: 营养摄入概览 <span class="priority p1">P1</span></div>
+                <div class="feature-desc">三个指标：蛋白质、碳水化合物、脂肪的进度条展示</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-DIET-03: 餐次记录列表 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">时间线设计，餐次图标区分：☀️早餐 | 🌤️午餐 | 🌙晚餐 | 🍪加餐</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-DIET-04: 添加饮食记录 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">浮动操作按钮，表单字段：餐次、食物名称、数量、单位</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-DIET-05: 饮水历史图表 <span class="priority p2">P2</span></div>
+                <div class="feature-desc">柱状图展示每日饮水量，目标线标注</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🏃 运动页面优化（6个功能）</div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-01: 今日运动概览卡片 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">双环进度条：运动时长（外圈）+ 步数（内圈）</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-02: 周运动趋势图 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">柱状图展示每日运动时长，支持切换：时长/步数/卡路里</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-03: 运动类型统计 <span class="priority p1">P1</span></div>
+                <div class="feature-desc">三宫格展示主要运动类型，图标 + 名称 + 本周次数</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-04: 运动记录列表 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">按时间倒序，每条记录：时间、类型、时长、卡路里</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-05: 添加运动记录 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">浮动操作按钮，表单字段：运动类型、时长、距离</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-EX-06: 运动目标设定 <span class="priority p2">P2</span></div>
+                <div class="feature-desc">每日运动时长/步数目标，每周运动次数目标</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">😌 心理页面优化（6个功能）</div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-01: 今日心情卡片 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">5个表情图标：😫(1分) | 😔(2分) | 😐(3分) | 😊(4分) | 😄(5分)</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-02: 心情趋势图 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">折线图展示每日心情评分，Y轴：1-5分，X轴：周一到周日</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-03: 呼吸练习卡片 <span class="priority p1">P1</span></div>
+                <div class="feature-desc">4-7-8呼吸练习引导，动画引导：吸气(4秒) → 屏息(7秒) → 呼气(8秒)</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-04: 心情日记列表 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">按时间倒序，每条记录：时间、表情、评分、文字描述</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-05: 记录心情对话框 <span class="priority p0">P0</span></div>
+                <div class="feature-desc">对话框形式，心情评分：滑动条或表情选择</div>
+            </div>
+            <div class="feature">
+                <div class="feature-title">FR-MENTAL-06: 心情统计 <span class="priority p2">P2</span></div>
+                <div class="feature-desc">本周平均心情，心情最好/最差的一天</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🧩 UI组件库扩展（11个新增组件）</div>
+            <table class="component-table">
+                <thead>
+                    <tr>
+                        <th>组件名</th>
+                        <th>描述</th>
+                        <th>使用页面</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>CircularProgressRing</td><td>环形进度条</td><td>首页、饮食、运动</td></tr>
+                    <tr><td>DualProgressRing</td><td>双环进度条</td><td>运动概览</td></tr>
+                    <tr><td>WeeklyBarChart</td><td>周柱状图</td><td>首页、运动</td></tr>
+                    <tr><td>TrendLineChart</td><td>趋势折线图</td><td>心理</td></tr>
+                    <tr><td>MealTimeline</td><td>餐次时间线</td><td>饮食</td></tr>
+                    <tr><td>ExerciseTimeline</td><td>运动时间线</td><td>运动</td></tr>
+                    <tr><td>MoodSelector</td><td>心情选择器</td><td>心理</td></tr>
+                    <tr><td>BreathingAnimation</td><td>呼吸动画</td><td>心理</td></tr>
+                    <tr><td>AchievementBadge</td><td>成就徽章</td><td>首页</td></tr>
+                    <tr><td>StatCard</td><td>统计卡片</td><td>首页、个人档案</td></tr>
+                    <tr><td>QuickActionButton</td><td>快速操作按钮</td><td>全局</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📅 实施计划</div>
+            <div class="plan">
+                <div class="plan-item">
+                    <div class="plan-title">阶段一</div>
+                    <div class="plan-time">2-3小时</div>
+                    <div class="plan-content">首页重新设计<br>FR-HOME-01 ~ FR-HOME-04</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-title">阶段二</div>
+                    <div class="plan-time">2-3小时</div>
+                    <div class="plan-content">饮食页面优化<br>FR-DIET-01 ~ FR-DIET-04</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-title">阶段三</div>
+                    <div class="plan-time">2-3小时</div>
+                    <div class="plan-content">运动页面优化<br>FR-EX-01 ~ FR-EX-05</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-title">阶段四</div>
+                    <div class="plan-time">2-3小时</div>
+                    <div class="plan-content">心理页面优化<br>FR-MENTAL-01 ~ FR-MENTAL-05</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-title">阶段五</div>
+                    <div class="plan-time">2-3小时</div>
+                    <div class="plan-content">收尾优化<br>P1/P2功能、UI细节、测试</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

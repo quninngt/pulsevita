@@ -135,14 +135,85 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val waterAmounts = waterRepository.getLast7DaysAmounts()
             _uiState.update { it.copy(weeklyWaterAmounts = waterAmounts) }
+            calculateWeeklyOverview()
         }
         viewModelScope.launch {
             val exerciseMinutes = exerciseRepository.getLast7DaysMinutes()
             _uiState.update { it.copy(weeklyExerciseMinutes = exerciseMinutes) }
+            calculateWeeklyOverview()
         }
         viewModelScope.launch {
             val moodLevels = moodRepository.getLast7DaysMoodLevels()
             _uiState.update { it.copy(weeklyMoodLevels = moodLevels) }
+            calculateWeeklyOverview()
+        }
+    }
+
+    /**
+     * 计算周概览数据（达标天数和趋势）
+     */
+    private fun calculateWeeklyOverview() {
+        val waterAmounts = _uiState.value.weeklyWaterAmounts
+        val exerciseMinutes = _uiState.value.weeklyExerciseMinutes
+        val moodLevels = _uiState.value.weeklyMoodLevels
+
+        if (waterAmounts.isEmpty() || exerciseMinutes.isEmpty() || moodLevels.isEmpty()) return
+
+        // 计算达标天数
+        val waterGoal = _uiState.value.water.goal
+        val exerciseGoal = _uiState.value.exercise.goal
+        
+        val waterDays = waterAmounts.count { it >= waterGoal }
+        val exerciseDays = exerciseMinutes.count { it >= exerciseGoal }
+        val moodDays = moodLevels.count { it != null && it > 0 }
+        val dietDays = 7 // 饮食默认7天（暂无具体数据）
+
+        // 计算趋势（与上周对比）
+        val waterTrend = calculateTrend(waterAmounts)
+        val exerciseTrend = calculateTrend(exerciseMinutes)
+        val moodTrend = calculateMoodTrend(moodLevels)
+        val dietTrend = "→" // 饮食暂无数据
+
+        _uiState.update {
+            it.copy(
+                weeklyWaterDays = waterDays,
+                weeklyExerciseDays = exerciseDays,
+                weeklyMoodDays = moodDays,
+                weeklyDietDays = dietDays,
+                weeklyWaterTrend = waterTrend,
+                weeklyExerciseTrend = exerciseTrend,
+                weeklyMoodTrend = moodTrend,
+                weeklyDietTrend = dietTrend
+            )
+        }
+    }
+
+    /**
+     * 计算数值趋势
+     */
+    private fun calculateTrend(values: List<Int>): String {
+        if (values.size < 2) return "→"
+        val firstHalf = values.take(3).average()
+        val secondHalf = values.takeLast(3).average()
+        return when {
+            secondHalf > firstHalf * 1.1 -> "↑"
+            secondHalf < firstHalf * 0.9 -> "↓"
+            else -> "→"
+        }
+    }
+
+    /**
+     * 计算心情趋势
+     */
+    private fun calculateMoodTrend(values: List<Int?>): String {
+        val validValues = values.filterNotNull()
+        if (validValues.size < 2) return "→"
+        val firstHalf = validValues.take(3).average()
+        val secondHalf = validValues.takeLast(3).average()
+        return when {
+            secondHalf > firstHalf + 0.3 -> "↑"
+            secondHalf < firstHalf - 0.3 -> "↓"
+            else -> "→"
         }
     }
 

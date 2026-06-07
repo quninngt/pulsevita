@@ -19,7 +19,16 @@ data class DietUiState(
     val showAddDietDialog: Boolean = false,
     val selectedMealType: String = "breakfast",
     val dietDescription: String = "",
-    val dietCalories: String = ""
+    val dietCalories: String = "",
+    // === 新增：营养数据 ===
+    val protein: Float = 0f,
+    val proteinGoal: Float = 60f, // 默认目标60g
+    val carbs: Float = 0f,
+    val carbsGoal: Float = 300f, // 默认目标300g
+    val fat: Float = 0f,
+    val fatGoal: Float = 65f, // 默认目标65g
+    // === 新增：饮水历史数据 ===
+    val weeklyWaterAmounts: List<Int> = emptyList()
 )
 
 @HiltViewModel
@@ -46,7 +55,47 @@ class DietViewModel @Inject constructor(
 
         dietRepository.getTodayRecords().onEach { records ->
             _uiState.update { it.copy(dietRecords = records) }
+            calculateNutrition(records)
         }.launchIn(viewModelScope)
+
+        // 加载饮水历史数据
+        loadWeeklyWaterData()
+    }
+
+    /**
+     * 加载近7天饮水数据
+     */
+    private fun loadWeeklyWaterData() {
+        viewModelScope.launch {
+            val weeklyAmounts = waterRepository.getLast7DaysAmounts()
+            _uiState.update { it.copy(weeklyWaterAmounts = weeklyAmounts) }
+        }
+    }
+
+    /**
+     * 计算营养摄入
+     */
+    private fun calculateNutrition(records: List<DietRecord>) {
+        var totalProtein = 0f
+        var totalCarbs = 0f
+        var totalFat = 0f
+
+        records.forEach { record ->
+            // 简单估算：根据卡路里估算营养成分
+            // 实际应用中应该从食物数据库获取
+            val calories = record.calories?.toFloat() ?: 0f
+            totalProtein += calories * 0.3f / 4f // 蛋白质占30%，1g=4卡
+            totalCarbs += calories * 0.5f / 4f   // 碳水占50%，1g=4卡
+            totalFat += calories * 0.2f / 9f     // 脂肪占20%，1g=9卡
+        }
+
+        _uiState.update {
+            it.copy(
+                protein = totalProtein,
+                carbs = totalCarbs,
+                fat = totalFat
+            )
+        }
     }
 
     fun addWater(amount: Int) {

@@ -20,6 +20,8 @@ import androidx.navigation.NavController
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.AnimatedNumber
 import com.healthapp.ui.components.PulseAnimation
+import com.healthapp.ui.components.NutritionOverviewCard
+import com.healthapp.ui.components.WaterHistoryChart
 import com.healthapp.ui.theme.WaterBlue
 import com.healthapp.util.Constants
 
@@ -53,6 +55,26 @@ fun DietScreen(
                     currentAmount = uiState.waterAmount,
                     goalAmount = uiState.waterGoal,
                     onAddWater = { viewModel.addWater(it) }
+                )
+            }
+
+            // Nutrition Overview Card
+            item {
+                NutritionOverviewCard(
+                    protein = uiState.protein,
+                    proteinGoal = uiState.proteinGoal,
+                    carbs = uiState.carbs,
+                    carbsGoal = uiState.carbsGoal,
+                    fat = uiState.fat,
+                    fatGoal = uiState.fatGoal
+                )
+            }
+
+            // Water History Chart
+            item {
+                WaterHistoryChart(
+                    dailyAmounts = uiState.weeklyWaterAmounts,
+                    goalAmount = uiState.waterGoal
                 )
             }
 

@@ -30,7 +30,13 @@ data class ExerciseUiState(
     val isHealthConnectAvailable: Boolean = false,
     val hasHealthConnectPermissions: Boolean = false,
     val officeExercises: List<OfficeExercise> = emptyList(),
-    val weeklyMinutes: List<Int> = emptyList()
+    val weeklyMinutes: List<Int> = emptyList(),
+    // === 新增：运动类型统计 ===
+    val walkingCount: Int = 0,
+    val officeExerciseCount: Int = 0,
+    val yogaCount: Int = 0,
+    // === 新增：目标设定对话框 ===
+    val showGoalDialog: Boolean = false
 )
 
 @HiltViewModel
@@ -83,6 +89,7 @@ class ExerciseViewModel @Inject constructor(
 
         exerciseRepository.getTodayRecords().onEach { records ->
             _uiState.update { it.copy(exerciseRecords = records) }
+            calculateExerciseTypeStats(records)
         }.launchIn(viewModelScope)
 
         // Load steps from Health Connect if available
@@ -93,6 +100,31 @@ class ExerciseViewModel @Inject constructor(
             exerciseRepository.getTodayTotalSteps().onEach { steps ->
                 _uiState.update { it.copy(todaySteps = steps.toLong()) }
             }.launchIn(viewModelScope)
+        }
+    }
+
+    /**
+     * 计算运动类型统计
+     */
+    private fun calculateExerciseTypeStats(records: List<ExerciseRecord>) {
+        var walkingCount = 0
+        var officeExerciseCount = 0
+        var yogaCount = 0
+
+        records.forEach { record ->
+            when (record.type) {
+                "walking" -> walkingCount++
+                "office_exercise" -> officeExerciseCount++
+                "yoga" -> yogaCount++
+            }
+        }
+
+        _uiState.update {
+            it.copy(
+                walkingCount = walkingCount,
+                officeExerciseCount = officeExerciseCount,
+                yogaCount = yogaCount
+            )
         }
     }
 
@@ -173,5 +205,33 @@ class ExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             exerciseRepository.deleteRecord(record)
         }
+    }
+
+    /**
+     * 显示目标设定对话框
+     */
+    fun showGoalDialog() {
+        _uiState.update { it.copy(showGoalDialog = true) }
+    }
+
+    /**
+     * 隐藏目标设定对话框
+     */
+    fun hideGoalDialog() {
+        _uiState.update { it.copy(showGoalDialog = false) }
+    }
+
+    /**
+     * 更新运动时长目标
+     */
+    fun updateDurationGoal(goal: Int) {
+        _uiState.update { it.copy(durationGoal = goal) }
+    }
+
+    /**
+     * 更新步数目标
+     */
+    fun updateStepsGoal(goal: Long) {
+        _uiState.update { it.copy(stepsGoal = goal) }
     }
 }

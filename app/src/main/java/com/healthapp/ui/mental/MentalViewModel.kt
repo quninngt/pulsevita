@@ -30,7 +30,12 @@ data class MentalUiState(
     val emotionTips: List<EmotionTipGroup> = emptyList(),
     val quote: String = "",
     val quoteFrom: String = "",
-    val weeklyMoodLevels: List<Int?> = emptyList()
+    val weeklyMoodLevels: List<Int?> = emptyList(),
+    // === 新增：心情统计数据 ===
+    val weeklyAverage: Float = 0f,
+    val bestDay: String = "",
+    val worstDay: String = "",
+    val trend: String = "stable" // "improving" / "stable" / "declining"
 )
 
 @HiltViewModel
@@ -55,11 +60,60 @@ class MentalViewModel @Inject constructor(
         viewModelScope.launch {
             val levels = moodRepository.getLast7DaysMoodLevels()
             _uiState.update { it.copy(weeklyMoodLevels = levels) }
+            calculateMoodStatistics(levels)
         }
 
         moodRepository.getRecentRecords(7).onEach { records ->
             _uiState.update { it.copy(recentMoods = records) }
         }.launchIn(viewModelScope)
+    }
+
+    /**
+     * 计算心情统计数据
+     */
+    private fun calculateMoodStatistics(levels: List<Int?>) {
+        val validLevels = levels.filterNotNull()
+        if (validLevels.isEmpty()) return
+
+        val average = validLevels.average().toFloat()
+        
+        // 找到最好和最差的一天
+        val days = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
+        var bestDay = ""
+        var worstDay = ""
+        var bestLevel = 0
+        var worstLevel = Int.MAX_VALUE
+        
+        levels.forEachIndexed { index, level ->
+            if (level != null) {
+                if (level > bestLevel) {
+                    bestLevel = level
+                    bestDay = days[index]
+                }
+                if (level < worstLevel) {
+                    worstLevel = level
+                    worstDay = days[index]
+                }
+            }
+        }
+
+        // 计算趋势
+        val firstHalf = validLevels.take(3).average()
+        val secondHalf = validLevels.takeLast(3).average()
+        val trend = when {
+            secondHalf > firstHalf + 0.3 -> "improving"
+            secondHalf < firstHalf - 0.3 -> "declining"
+            else -> "stable"
+        }
+
+        _uiState.update {
+            it.copy(
+                weeklyAverage = average,
+                bestDay = bestDay,
+                worstDay = worstDay,
+                trend = trend
+            )
+        }
     }
 
     private fun loadEmotionTips() {

@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.healthapp.data.local.entity.MoodRecord
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.MoodTrendChart
+import com.healthapp.ui.components.MoodStatisticsCard
 import com.healthapp.ui.components.PulseAnimation
 import com.healthapp.ui.components.SectionHeader
 import com.healthapp.ui.theme.*
@@ -102,6 +103,16 @@ fun MentalScreen(
                         modifier = Modifier.padding(16.dp)
                     )
                 }
+            }
+
+            // Mood Statistics Card
+            item {
+                MoodStatisticsCard(
+                    weeklyAverage = uiState.weeklyAverage,
+                    bestDay = uiState.bestDay,
+                    worstDay = uiState.worstDay,
+                    trend = uiState.trend
+                )
             }
 
             // Recent Moods

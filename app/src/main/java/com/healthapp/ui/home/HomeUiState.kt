@@ -67,5 +67,14 @@ data class HomeUiState(
     val weeklyExerciseMinutes: List<Int> = emptyList(),
     val weeklyMoodLevels: List<Int?> = emptyList(),
     // === 新增：成就系统 ===
-    val achievements: List<Achievement> = emptyList()
+    val achievements: List<Achievement> = emptyList(),
+    // === 新增：周概览数据 ===
+    val weeklyWaterDays: Int = 0,
+    val weeklyExerciseDays: Int = 0,
+    val weeklyMoodDays: Int = 0,
+    val weeklyDietDays: Int = 0,
+    val weeklyWaterTrend: String = "→",
+    val weeklyExerciseTrend: String = "→",
+    val weeklyMoodTrend: String = "→",
+    val weeklyDietTrend: String = "→"
 )

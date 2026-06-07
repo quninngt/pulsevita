@@ -18,6 +18,8 @@ import androidx.navigation.NavController
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.AnimatedNumber
 import com.healthapp.ui.components.ExerciseTrendChart
+import com.healthapp.ui.components.ExerciseTypeStatsCard
+import com.healthapp.ui.components.ExerciseGoalDialog
 import com.healthapp.ui.components.SectionHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,8 +52,22 @@ fun ExerciseScreen(
                     todayDuration = uiState.todayDuration,
                     durationGoal = uiState.durationGoal,
                     todaySteps = uiState.todaySteps,
-                    stepsGoal = uiState.stepsGoal
+                    stepsGoal = uiState.stepsGoal,
+                    onGoalClick = { viewModel.showGoalDialog() }
                 )
+            }
+
+            // Exercise Goal Dialog
+            if (uiState.showGoalDialog) {
+                item {
+                    ExerciseGoalDialog(
+                        currentDurationGoal = uiState.durationGoal,
+                        currentStepsGoal = uiState.stepsGoal,
+                        onDurationGoalChange = { viewModel.updateDurationGoal(it) },
+                        onStepsGoalChange = { viewModel.updateStepsGoal(it) },
+                        onDismiss = { viewModel.hideGoalDialog() }
+                    )
+                }
             }
 
             // Weekly Exercise Trend Chart
@@ -71,6 +87,15 @@ fun ExerciseScreen(
                         modifier = Modifier.padding(16.dp)
                     )
                 }
+            }
+
+            // Exercise Type Stats Card
+            item {
+                ExerciseTypeStatsCard(
+                    walkingCount = uiState.walkingCount,
+                    officeExerciseCount = uiState.officeExerciseCount,
+                    yogaCount = uiState.yogaCount
+                )
             }
 
             // Quick Add Buttons
@@ -176,7 +201,8 @@ fun ExerciseOverviewCard(
     todayDuration: Int,
     durationGoal: Int,
     todaySteps: Long,
-    stepsGoal: Long
+    stepsGoal: Long,
+    onGoalClick: () -> Unit = {}
 ) {
     val durationProgress = (todayDuration.toFloat() / durationGoal).coerceIn(0f, 1f)
     val stepsProgress = (todaySteps.toFloat() / stepsGoal).coerceIn(0f, 1f)
@@ -187,12 +213,25 @@ fun ExerciseOverviewCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "今日运动",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "今日运动",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                IconButton(onClick = onGoalClick) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = "设置目标",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
