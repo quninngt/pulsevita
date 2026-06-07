@@ -58,4 +58,20 @@ class ServerRepository @Inject constructor(
     suspend fun getAllAchievements(): NetworkResult<List<AchievementItem>> {
         return safeApiCall { serverApiService.getAllAchievements() }
     }
+
+    /** 获取每日健康贴士 */
+    suspend fun getDailyTip(): NetworkResult<DailyTipData?> {
+        return safeApiCall {
+            val response = serverApiService.getDailyTip()
+            if (response.isSuccessful) response.body()?.data else null
+        }
+    }
+
+    /** 获取每日挑战 */
+    suspend fun getDailyChallenge(date: String): NetworkResult<DailyChallengeData?> {
+        return safeApiCall {
+            val response = serverApiService.getDailyChallenge(date)
+            if (response.isSuccessful) response.body()?.data else null
+        }
+    }
 }

@@ -76,5 +76,11 @@ data class HomeUiState(
     val weeklyWaterTrend: String = "→",
     val weeklyExerciseTrend: String = "→",
     val weeklyMoodTrend: String = "→",
-    val weeklyDietTrend: String = "→"
+    val weeklyDietTrend: String = "→",
+    // === 新增：服务端每日贴士和挑战 ===
+    val serverTip: String? = null,
+    val serverTipTitle: String? = null,
+    val serverChallenge: String? = null,
+    val serverChallengeTitle: String? = null,
+    val serverChallengeIcon: String? = null
 )

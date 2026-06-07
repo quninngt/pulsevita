@@ -24,6 +24,9 @@ interface WaterRecordDao {
     @Query("SELECT DISTINCT date FROM water_records ORDER BY date DESC")
     fun getAllDistinctDates(): Flow<List<String>>
 
+    @Query("SELECT * FROM water_records ORDER BY date DESC, timestamp DESC")
+    suspend fun getAllRecords(): List<WaterRecord>
+
     @Query("SELECT COALESCE(SUM(amount), 0) FROM water_records WHERE date = :date")
     suspend fun getTotalAmountByDateOnce(date: String): Int
 }

@@ -17,4 +17,7 @@ interface DietRecordDao {
 
     @Delete
     suspend fun deleteRecord(record: DietRecord)
+
+    @Query("SELECT * FROM diet_records ORDER BY date DESC, timestamp DESC")
+    suspend fun getAllRecords(): List<DietRecord>
 }

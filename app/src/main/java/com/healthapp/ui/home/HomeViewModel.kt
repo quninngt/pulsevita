@@ -26,7 +26,8 @@ class HomeViewModel @Inject constructor(
     private val healthTipRepository: HealthTipRepository,
     private val userRepository: UserRepository,
     private val weatherRepository: WeatherRepository,
-    private val hitokotoRepository: HitokotoRepository
+    private val hitokotoRepository: HitokotoRepository,
+    private val serverRepository: ServerRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -50,6 +51,8 @@ class HomeViewModel @Inject constructor(
         loadDailyChallenge()
         loadDailyFood()
         loadWeeklyData()
+        loadServerTip()
+        loadServerChallenge()
 
         // Reactive local data
         waterRepository.getTodayTotalAmount().onEach { amount ->
@@ -285,6 +288,44 @@ class HomeViewModel @Inject constructor(
                 foodBenefits = food.benefits,
                 foodHowToEat = food.howToEat
             ))
+        }
+    }
+
+    private fun loadServerTip() {
+        viewModelScope.launch {
+            when (val result = serverRepository.getDailyTip()) {
+                is NetworkResult.Success -> {
+                    result.data?.let { tip ->
+                        _uiState.update {
+                            it.copy(
+                                serverTip = tip.content,
+                                serverTipTitle = tip.title
+                            )
+                        }
+                    }
+                }
+                else -> {} // 静默失败，使用本地贴士
+            }
+        }
+    }
+
+    private fun loadServerChallenge() {
+        viewModelScope.launch {
+            val date = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            when (val result = serverRepository.getDailyChallenge(date)) {
+                is NetworkResult.Success -> {
+                    result.data?.let { challenge ->
+                        _uiState.update {
+                            it.copy(
+                                serverChallenge = challenge.description,
+                                serverChallengeTitle = challenge.title,
+                                serverChallengeIcon = challenge.icon
+                            )
+                        }
+                    }
+                }
+                else -> {} // 静默失败，使用本地挑战
+            }
         }
     }
 }

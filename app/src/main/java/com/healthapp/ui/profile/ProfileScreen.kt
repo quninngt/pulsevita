@@ -154,6 +154,15 @@ private fun FeatureEntryCards(navController: NavController) {
                 iconTint = scheme.chartOrange,
                 onClick = { navController.navigate(Screen.AchievementDetail.route) }
             )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FeatureEntryItem(
+                icon = Icons.Default.FileDownload,
+                title = "数据导出",
+                description = "将健康数据导出为 CSV 文件",
+                iconTint = scheme.chartPurple,
+                onClick = { navController.navigate(Screen.Export.route) }
+            )
         }
     }
 }

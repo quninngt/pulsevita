@@ -33,6 +33,7 @@ import com.healthapp.ui.home.HomeScreen
 import com.healthapp.ui.mental.MentalScreen
 import com.healthapp.ui.plan.PlanScreen
 import com.healthapp.ui.profile.ProfileScreen
+import com.healthapp.ui.profile.ExportScreen
 import com.healthapp.ui.report.ReportScreen
 
 data class BottomNavItem(
@@ -165,6 +166,9 @@ fun HealthNavHost() {
             }
             composable(Screen.Report.route) {
                 ReportScreen(navController = navController)
+            }
+            composable(Screen.Export.route) {
+                ExportScreen(navController = navController)
             }
         }
     }

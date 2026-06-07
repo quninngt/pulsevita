@@ -18,4 +18,5 @@ sealed class Screen(val route: String) {
     object Plan : Screen("plan")
     object Report : Screen("report")
     object AchievementDetail : Screen("achievement_detail")
+    object Export : Screen("export")
 }

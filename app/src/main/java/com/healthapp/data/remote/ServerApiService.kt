@@ -4,6 +4,22 @@ import com.squareup.moshi.Json
 import retrofit2.Response
 import retrofit2.http.*
 
+// ===== Content Data Models =====
+
+/** 每日健康贴士 */
+data class DailyTipData(
+    @Json(name = "title") val title: String,
+    @Json(name = "content") val content: String,
+    @Json(name = "category") val category: String = ""
+)
+
+/** 每日挑战 */
+data class DailyChallengeData(
+    @Json(name = "title") val title: String,
+    @Json(name = "description") val description: String,
+    @Json(name = "icon") val icon: String = ""
+)
+
 // ===== Generic API response wrapper =====
 data class ServerApiResponse<T>(
     val code: Int,
@@ -255,8 +271,8 @@ interface ServerApiService {
     // ---- Content ----
 
     @GET("api/content/tips/daily")
-    suspend fun getDailyTip(): Response<ServerApiResponse<Any>>
+    suspend fun getDailyTip(): Response<ServerApiResponse<DailyTipData>>
 
     @GET("api/content/challenges/daily")
-    suspend fun getDailyChallenge(@Query("date") date: String): Response<ServerApiResponse<Any>>
+    suspend fun getDailyChallenge(@Query("date") date: String): Response<ServerApiResponse<DailyChallengeData>>
 }

@@ -24,6 +24,9 @@ interface ExerciseRecordDao {
     @Query("SELECT DISTINCT date FROM exercise_records ORDER BY date DESC")
     fun getAllDistinctDates(): Flow<List<String>>
 
+    @Query("SELECT * FROM exercise_records ORDER BY date DESC, timestamp DESC")
+    suspend fun getAllRecords(): List<ExerciseRecord>
+
     @Query("SELECT COALESCE(SUM(duration), 0) FROM exercise_records WHERE date = :date")
     suspend fun getTotalDurationByDateOnce(date: String): Int
 }

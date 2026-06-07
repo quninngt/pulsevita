@@ -384,7 +384,10 @@ modifier = Modifier.weight(1f)
 }
 Spacer(modifier = Modifier.height(20.dp))
 // === 7. Daily Challenge ===
-if (uiState.extras.challengeTitle.isNotEmpty()) {
+val displayChallengeTitle = uiState.serverChallengeTitle ?: uiState.extras.challengeTitle
+val displayChallengeDesc = uiState.serverChallenge ?: uiState.extras.challengeDesc
+val displayChallengeIcon = uiState.serverChallengeIcon ?: uiState.extras.challengeIcon
+if (displayChallengeTitle.isNotEmpty()) {
 SectionHeader(
 icon = Icons.Default.EmojiEvents,
 title = "今日挑战"
@@ -432,7 +435,7 @@ modifier = Modifier.size(52.dp)
 ) {
 Box(contentAlignment = Alignment.Center) {
 Text(
-text = uiState.extras.challengeIcon,
+text = displayChallengeIcon,
 style = MaterialTheme.typography.headlineMedium
 )
 }
@@ -447,7 +450,7 @@ fontWeight = FontWeight.SemiBold
 )
 Spacer(modifier = Modifier.height(2.dp))
 Text(
-text = uiState.extras.challengeTitle,
+text = displayChallengeTitle,
 style = MaterialTheme.typography.titleMedium,
 fontWeight = FontWeight.Bold,
 color = challengeScheme.textPrimary
@@ -462,7 +465,7 @@ color = challengeScheme.surface.copy(alpha = 0.6f),
 modifier = Modifier.fillMaxWidth()
 ) {
 Text(
-text = uiState.extras.challengeDesc,
+text = displayChallengeDesc,
 style = MaterialTheme.typography.bodyMedium,
 color = challengeScheme.textSecondary,
 modifier = Modifier.padding(14.dp),
@@ -496,15 +499,17 @@ modifier = Modifier.size(18.dp)
 Spacer(modifier = Modifier.height(20.dp))
 }
 // === 8. Health Tip — 翻转卡片 ===
-uiState.healthTip?.let { tip ->
+val tipTitle = uiState.serverTipTitle ?: uiState.healthTip?.title
+val tipContent = uiState.serverTip ?: uiState.healthTip?.content
+if (tipTitle != null && tipContent != null) {
 SectionHeader(
 icon = Icons.Default.Lightbulb,
 title = "健康贴士"
 )
 Spacer(modifier = Modifier.height(8.dp))
 HealthTipFlipCard(
-tipTitle = tip.title,
-tipContent = tip.content,
+tipTitle = tipTitle,
+tipContent = tipContent,
 modifier = Modifier.padding(horizontal = 16.dp)
 )
 Spacer(modifier = Modifier.height(20.dp))
