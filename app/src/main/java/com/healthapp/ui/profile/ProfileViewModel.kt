@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.healthapp.data.local.AppDatabase
 import com.healthapp.data.local.entity.UserEntity
 import com.healthapp.data.repository.UserRepository
+import com.healthapp.data.repository.SyncRepository
 import com.healthapp.util.BmiUtils
 import com.healthapp.data.remote.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +33,8 @@ data class ProfileUiState(
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val database: AppDatabase,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -130,6 +132,9 @@ class ProfileViewModel @Inject constructor(
                 userRepository.updateUser(newUser)
             }
             _uiState.update { it.copy(isEditing = false) }
+
+            // 同步到服务器
+            launch { syncRepository.syncProfileToServer() }
         }
     }
 
@@ -156,11 +161,8 @@ class ProfileViewModel @Inject constructor(
 
     fun clearAllData(context: Context) {
         viewModelScope.launch {
-            // Clear all local data
             database.clearAllTables()
-            // Clear token
             tokenManager.clearToken()
-            // Clear SharedPreferences
             context.getSharedPreferences("health_app_prefs", Context.MODE_PRIVATE).edit().clear().apply()
             _uiState.update { it.copy(showClearDataDialog = false, isLoggedIn = false, username = "") }
         }

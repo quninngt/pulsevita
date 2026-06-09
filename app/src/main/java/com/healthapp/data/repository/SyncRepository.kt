@@ -5,7 +5,10 @@ import com.healthapp.data.local.dao.WaterRecordDao
 import com.healthapp.data.local.dao.ExerciseRecordDao
 import com.healthapp.data.local.dao.MoodRecordDao
 import com.healthapp.data.local.dao.DietRecordDao
+import com.healthapp.data.local.dao.UserDao
+import com.healthapp.data.local.entity.UserEntity
 import com.healthapp.data.remote.ServerApiService
+import com.healthapp.data.remote.TokenManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -13,7 +16,7 @@ import javax.inject.Singleton
 
 /**
  * 数据同步仓库
- * 负责本地数据与服务端的同步
+ * 负责本地数据与服务端的双向同步
  */
 @Singleton
 class SyncRepository @Inject constructor(
@@ -21,7 +24,9 @@ class SyncRepository @Inject constructor(
     private val waterRecordDao: WaterRecordDao,
     private val exerciseRecordDao: ExerciseRecordDao,
     private val moodRecordDao: MoodRecordDao,
-    private val dietRecordDao: DietRecordDao
+    private val dietRecordDao: DietRecordDao,
+    private val userDao: UserDao,
+    private val tokenManager: TokenManager
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val tag = "SyncRepository"
@@ -127,8 +132,76 @@ class SyncRepository @Inject constructor(
             } else {
                 Log.d(tag, "No records to sync")
             }
+
+            // 从服务器拉取个人档案到本地
+            fetchProfileFromServer()
         } catch (e: Exception) {
             Log.w(tag, "Sync on login failed: ${e.message}")
+        }
+    }
+
+    /**
+     * 从服务器拉取个人档案并保存到本地数据库
+     * 用于卸载重装后恢复用户数据
+     */
+    suspend fun fetchProfileFromServer() {
+        try {
+            val response = serverApiService.getProfile()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body?.code == 200 && body.data != null) {
+                    val profile = body.data!!
+                    val username = tokenManager.getUsername() ?: ""
+
+                    // 检查本地是否已有用户数据
+                    val existingUser = userDao.getCurrentUserOnce()
+
+                    val userEntity = UserEntity(
+                        id = existingUser?.id ?: java.util.UUID.randomUUID().toString(),
+                        name = profile.nickname.ifEmpty { username },
+                        gender = profile.gender ?: "",
+                        height = profile.height ?: 0f,
+                        weight = profile.weight ?: 0f,
+                        occupation = profile.occupation ?: "",
+                        createdAt = existingUser?.createdAt ?: System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+
+                    if (existingUser != null) {
+                        userDao.updateUser(userEntity)
+                        Log.i(tag, "Profile updated from server")
+                    } else {
+                        userDao.insertUser(userEntity)
+                        Log.i(tag, "Profile saved from server")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to fetch profile: ${e.message}")
+        }
+    }
+
+    /**
+     * 将本地个人档案同步到服务器
+     */
+    suspend fun syncProfileToServer() {
+        try {
+            val user = userDao.getCurrentUserOnce() ?: return
+            val profile = com.healthapp.data.remote.UserProfileData(
+                userId = "",
+                username = "",
+                nickname = user.name,
+                gender = user.gender,
+                height = user.height,
+                weight = user.weight,
+                birthDate = null,
+                occupation = user.occupation,
+                avatarUrl = null
+            )
+            serverApiService.updateProfile(profile)
+            Log.i(tag, "Profile synced to server")
+        } catch (e: Exception) {
+            Log.w(tag, "Failed to sync profile: ${e.message}")
         }
     }
 }
