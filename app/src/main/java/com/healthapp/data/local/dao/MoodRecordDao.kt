@@ -24,6 +24,9 @@ interface MoodRecordDao {
     @Query("SELECT * FROM mood_records ORDER BY date DESC, timestamp DESC")
     suspend fun getAllRecords(): List<MoodRecord>
 
+    @Query("SELECT * FROM mood_records WHERE date >= :fromDate ORDER BY date DESC, timestamp DESC")
+    suspend fun getRecordsAfterDate(fromDate: String): List<MoodRecord>
+
     @Query("SELECT moodLevel FROM mood_records WHERE date = :date ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLatestMoodLevelByDate(date: String): Int?
 }

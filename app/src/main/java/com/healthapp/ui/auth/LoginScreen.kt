@@ -59,6 +59,16 @@ fun LoginScreen(
                 )
             )
     ) {
+        // 右上角服务器设置图标
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            ServerSettingsIconButton()
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -20,4 +20,7 @@ interface DietRecordDao {
 
     @Query("SELECT * FROM diet_records ORDER BY date DESC, timestamp DESC")
     suspend fun getAllRecords(): List<DietRecord>
+
+    @Query("SELECT * FROM diet_records WHERE date >= :fromDate ORDER BY date DESC, timestamp DESC")
+    suspend fun getRecordsAfterDate(fromDate: String): List<DietRecord>
 }

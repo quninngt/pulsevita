@@ -93,12 +93,17 @@ fun ExerciseScreen(
             item {
                 ExerciseTypeStatsCard(
                     walkingCount = uiState.walkingCount,
-                    officeExerciseCount = uiState.officeExerciseCount,
-                    yogaCount = uiState.yogaCount
+                    runningCount = uiState.runningCount,
+                    cyclingCount = uiState.cyclingCount,
+                    yogaCount = uiState.yogaCount,
+                    stretchingCount = uiState.stretchingCount,
+                    strengthCount = uiState.strengthCount,
+                    swimmingCount = uiState.swimmingCount,
+                    officeExerciseCount = uiState.officeExerciseCount
                 )
             }
 
-            // Quick Add Buttons
+            // Quick Add Buttons - 常用运动
             item {
                 Text(
                     text = "快速记录",
@@ -106,6 +111,7 @@ fun ExerciseScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                // 第一行：步行、跑步、骑行
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -117,17 +123,62 @@ fun ExerciseScreen(
                         modifier = Modifier.weight(1f)
                     )
                     ExerciseQuickButton(
-                        icon = Icons.Default.Desk,
-                        label = "办公室运动",
-                        onClick = { viewModel.showAddDialog("office_exercise") },
+                        icon = Icons.Default.DirectionsRun,
+                        label = "跑步",
+                        onClick = { viewModel.showAddDialog("running") },
                         modifier = Modifier.weight(1f)
                     )
+                    ExerciseQuickButton(
+                        icon = Icons.Default.PedalBike,
+                        label = "骑行",
+                        onClick = { viewModel.showAddDialog("cycling") },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                // 第二行：瑜伽、拉伸、力量
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     ExerciseQuickButton(
                         icon = Icons.Default.SelfImprovement,
                         label = "瑜伽",
                         onClick = { viewModel.showAddDialog("yoga") },
                         modifier = Modifier.weight(1f)
                     )
+                    ExerciseQuickButton(
+                        icon = Icons.Default.Accessible,
+                        label = "拉伸",
+                        onClick = { viewModel.showAddDialog("stretching") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ExerciseQuickButton(
+                        icon = Icons.Default.FitnessCenter,
+                        label = "力量",
+                        onClick = { viewModel.showAddDialog("strength") },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                // 第三行：游泳、办公室运动、更多
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ExerciseQuickButton(
+                        icon = Icons.Default.Pool,
+                        label = "游泳",
+                        onClick = { viewModel.showAddDialog("swimming") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ExerciseQuickButton(
+                        icon = Icons.Default.Desk,
+                        label = "办公室",
+                        onClick = { viewModel.showAddDialog("office_exercise") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
 

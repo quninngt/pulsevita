@@ -1,6 +1,7 @@
 package com.healthapp.ui.home
 
 import com.healthapp.data.local.entity.HealthTip
+import com.healthapp.data.remote.AchievementData
 import com.healthapp.ui.components.Achievement
 import java.time.LocalDate
 
@@ -82,5 +83,8 @@ data class HomeUiState(
     val serverTipTitle: String? = null,
     val serverChallenge: String? = null,
     val serverChallengeTitle: String? = null,
-    val serverChallengeIcon: String? = null
+    val serverChallengeIcon: String? = null,
+    // === 新增：服务端成就数据 ===
+    val recentAchievements: List<AchievementData> = emptyList(),
+    val showAchievementUnlock: AchievementData? = null
 )

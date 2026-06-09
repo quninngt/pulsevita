@@ -18,7 +18,9 @@ data class ReportUiState(
     val currentReport: HealthReport? = null,
     val reportList: List<HealthReport> = emptyList(),
     val selectedType: String = "weekly",
-    val error: String? = null
+    val error: String? = null,
+    val showHistory: Boolean = false,
+    val selectedReportIndex: Int = -1
 )
 
 @HiltViewModel
@@ -66,7 +68,7 @@ class ReportViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            reportList = result.data.reports,
+                            reportList = result.data,
                             error = null
                         )
                     }
@@ -79,6 +81,46 @@ class ReportViewModel @Inject constructor(
                 NetworkResult.Loading -> { /* handled above */ }
             }
         }
+    }
+
+    fun loadHistory(type: String) {
+        _uiState.update { it.copy(showHistory = true, selectedReportIndex = -1, selectedType = type) }
+        loadReportList(type)
+    }
+
+    fun toggleHistory() {
+        val showHistory = !_uiState.value.showHistory
+        if (showHistory) {
+            loadHistory(_uiState.value.selectedType)
+        } else {
+            _uiState.update { it.copy(showHistory = false, selectedReportIndex = -1) }
+        }
+    }
+
+    fun selectReport(index: Int) {
+        val report = _uiState.value.reportList.getOrNull(index) ?: return
+        _uiState.update {
+            it.copy(selectedReportIndex = index, currentReport = report)
+        }
+    }
+
+    fun navigateToPrevious() {
+        val current = _uiState.value.selectedReportIndex
+        if (current > 0) {
+            selectReport(current - 1)
+        }
+    }
+
+    fun navigateToNext() {
+        val current = _uiState.value.selectedReportIndex
+        val lastIndex = _uiState.value.reportList.size - 1
+        if (current in 0 until lastIndex) {
+            selectReport(current + 1)
+        }
+    }
+
+    fun backToHistoryList() {
+        _uiState.update { it.copy(selectedReportIndex = -1) }
     }
 
     fun clearError() {

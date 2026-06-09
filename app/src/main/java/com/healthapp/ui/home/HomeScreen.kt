@@ -20,12 +20,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthapp.navigation.Screen
 import com.healthapp.ui.DisplayMappings
 import com.healthapp.ui.components.AnimatedCircularProgressRing
 import com.healthapp.ui.components.AchievementRow
+import com.healthapp.ui.components.AchievementUnlockDialog
 import com.healthapp.ui.components.HealthTipFlipCard
 import com.healthapp.ui.components.MoodTrendChart
 import com.healthapp.ui.components.QuickActionCard
@@ -34,6 +36,7 @@ import com.healthapp.ui.components.StreakCalendar
 import com.healthapp.ui.components.WaterTrendChart
 import com.healthapp.ui.components.ExerciseTrendChart
 import com.healthapp.ui.components.WeeklyOverviewCard
+import com.healthapp.ui.components.ErrorRetryCard
 import com.healthapp.ui.theme.PulseVitaTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +46,7 @@ viewModel: HomeViewModel = hiltViewModel()
 ) {
 val uiState by viewModel.uiState.collectAsState()
 val snackbarHostState = remember { SnackbarHostState() }
-// Show error as snackbar
-LaunchedEffect(uiState.errorMessage) {
-uiState.errorMessage?.let {
-snackbarHostState.showSnackbar(it)
-viewModel.clearError()
-}
-}
+// Show error as ErrorRetryCard (snackbar removed)
 Scaffold(
 snackbarHost = { SnackbarHost(snackbarHostState) }
 ) { scaffoldPadding ->
@@ -67,6 +64,14 @@ modifier = Modifier
 .fillMaxSize()
 .verticalScroll(rememberScrollState())
 ) {
+// Error card
+uiState.errorMessage?.let { errorMsg ->
+    ErrorRetryCard(
+        message = errorMsg,
+        onRetry = { viewModel.retry() },
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
 // === 1. Integrated Header (replaces TopAppBar) ===
 Row(
 modifier = Modifier
@@ -283,6 +288,151 @@ StreakCalendar(
 streakDates = uiState.streakDates,
 modifier = Modifier.padding(12.dp)
 )
+}
+Spacer(modifier = Modifier.height(20.dp))
+// === 5.1 最近解锁的成就 ===
+if (uiState.recentAchievements.isNotEmpty()) {
+val achievementScheme = PulseVitaTheme.currentScheme()
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+onClick = { navController.navigate(Screen.AchievementDetail.route) }
+) {
+Column(modifier = Modifier.padding(16.dp)) {
+Row(
+modifier = Modifier.fillMaxWidth(),
+verticalAlignment = Alignment.CenterVertically,
+horizontalArrangement = Arrangement.SpaceBetween
+) {
+Text(
+text = "🏆 最近成就",
+style = MaterialTheme.typography.titleSmall,
+fontWeight = FontWeight.Bold,
+color = achievementScheme.warning
+)
+Row(verticalAlignment = Alignment.CenterVertically) {
+Text(
+text = "查看全部",
+style = MaterialTheme.typography.labelSmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant
+)
+Icon(
+Icons.Default.ChevronRight,
+contentDescription = null,
+modifier = Modifier.size(16.dp),
+tint = MaterialTheme.colorScheme.onSurfaceVariant
+)
+}
+}
+Spacer(modifier = Modifier.height(12.dp))
+uiState.recentAchievements.forEach { achievement ->
+Row(
+modifier = Modifier
+.fillMaxWidth()
+.padding(vertical = 6.dp),
+verticalAlignment = Alignment.CenterVertically
+) {
+Surface(
+shape = RoundedCornerShape(10.dp),
+color = achievementScheme.warning.copy(alpha = 0.12f),
+modifier = Modifier.size(40.dp)
+) {
+Box(contentAlignment = Alignment.Center) {
+Text(
+text = achievement.icon.ifEmpty { "🏅" },
+style = MaterialTheme.typography.titleMedium
+)
+}
+}
+Spacer(modifier = Modifier.width(12.dp))
+Column(modifier = Modifier.weight(1f)) {
+Text(
+text = achievement.name,
+style = MaterialTheme.typography.bodyMedium,
+fontWeight = FontWeight.SemiBold,
+color = MaterialTheme.colorScheme.onSurface,
+maxLines = 1,
+overflow = TextOverflow.Ellipsis
+)
+Text(
+text = achievement.description,
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant,
+maxLines = 1,
+overflow = TextOverflow.Ellipsis
+)
+}
+if (achievement.tier.isNotEmpty()) {
+Surface(
+shape = RoundedCornerShape(6.dp),
+color = achievementScheme.warning.copy(alpha = 0.1f)
+) {
+Text(
+text = achievement.tier,
+modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+style = MaterialTheme.typography.labelSmall,
+color = achievementScheme.warning,
+fontWeight = FontWeight.Medium
+)
+}
+}
+}
+}
+}
+}
+Spacer(modifier = Modifier.height(20.dp))
+}
+// === 5.5 每日建议 ===
+SectionHeader(
+icon = Icons.Default.Lightbulb,
+title = "每日建议"
+)
+Spacer(modifier = Modifier.height(8.dp))
+Card(
+modifier = Modifier
+.fillMaxWidth()
+.padding(horizontal = 16.dp),
+shape = RoundedCornerShape(16.dp),
+elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+onClick = { navController.navigate(Screen.Suggestion.route) }
+) {
+Row(
+modifier = Modifier
+.fillMaxWidth()
+.padding(16.dp),
+verticalAlignment = Alignment.CenterVertically
+) {
+Surface(
+shape = RoundedCornerShape(12.dp),
+color = MaterialTheme.colorScheme.primaryContainer,
+modifier = Modifier.size(48.dp)
+) {
+Box(contentAlignment = Alignment.Center) {
+Text("💡", fontSize = 24.sp)
+}
+}
+Spacer(modifier = Modifier.width(12.dp))
+Column(modifier = Modifier.weight(1f)) {
+Text(
+text = "查看今日健康建议",
+style = MaterialTheme.typography.titleSmall,
+fontWeight = FontWeight.SemiBold
+)
+Text(
+text = "3条专属建议，投票选出最想执行的",
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant
+)
+}
+Icon(
+Icons.Default.ChevronRight,
+contentDescription = null,
+tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+)
+}
 }
 Spacer(modifier = Modifier.height(20.dp))
 // === 6. 健康趋势图 ===
@@ -621,6 +771,13 @@ color = MaterialTheme.colorScheme.onSecondaryContainer
 Spacer(modifier = Modifier.height(16.dp))
 }
 Spacer(modifier = Modifier.height(16.dp))
+}
+// === 成就解锁弹窗 ===
+uiState.showAchievementUnlock?.let { achievement ->
+AchievementUnlockDialog(
+achievement = achievement,
+onDismiss = { viewModel.dismissAchievementUnlock() }
+)
 }
 } // Box
 } // Scaffold

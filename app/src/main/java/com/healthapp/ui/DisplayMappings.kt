@@ -24,8 +24,25 @@ object DisplayMappings {
         "walking" -> "步行"
         "office_exercise" -> "办公室运动"
         "yoga" -> "瑜伽"
+        "running" -> "跑步"
+        "cycling" -> "骑行"
+        "swimming" -> "游泳"
+        "stretching" -> "拉伸"
+        "strength" -> "力量训练"
         else -> type
     }
+
+    data class ExerciseType(val key: String, val label: String, val icon: String)
+    val exerciseTypes = listOf(
+        ExerciseType("walking", "步行", "🚶"),
+        ExerciseType("running", "跑步", "🏃"),
+        ExerciseType("cycling", "骑行", "🚴"),
+        ExerciseType("yoga", "瑜伽", "🧘"),
+        ExerciseType("stretching", "拉伸", "🤸"),
+        ExerciseType("strength", "力量训练", "💪"),
+        ExerciseType("swimming", "游泳", "🏊"),
+        ExerciseType("office_exercise", "办公室运动", "🪑")
+    )
 
     data class MealType(val key: String, val label: String)
     val mealTypes = listOf(

@@ -33,10 +33,17 @@ data class ExerciseUiState(
     val weeklyMinutes: List<Int> = emptyList(),
     // === 新增：运动类型统计 ===
     val walkingCount: Int = 0,
-    val officeExerciseCount: Int = 0,
+    val runningCount: Int = 0,
+    val cyclingCount: Int = 0,
     val yogaCount: Int = 0,
+    val stretchingCount: Int = 0,
+    val strengthCount: Int = 0,
+    val swimmingCount: Int = 0,
+    val officeExerciseCount: Int = 0,
     // === 新增：目标设定对话框 ===
-    val showGoalDialog: Boolean = false
+    val showGoalDialog: Boolean = false,
+    // === 新增：更多运动类型选择 ===
+    val showTypeSelector: Boolean = false
 )
 
 @HiltViewModel
@@ -108,22 +115,37 @@ class ExerciseViewModel @Inject constructor(
      */
     private fun calculateExerciseTypeStats(records: List<ExerciseRecord>) {
         var walkingCount = 0
-        var officeExerciseCount = 0
+        var runningCount = 0
+        var cyclingCount = 0
         var yogaCount = 0
+        var stretchingCount = 0
+        var strengthCount = 0
+        var swimmingCount = 0
+        var officeExerciseCount = 0
 
         records.forEach { record ->
             when (record.type) {
                 "walking" -> walkingCount++
-                "office_exercise" -> officeExerciseCount++
+                "running" -> runningCount++
+                "cycling" -> cyclingCount++
                 "yoga" -> yogaCount++
+                "stretching" -> stretchingCount++
+                "strength" -> strengthCount++
+                "swimming" -> swimmingCount++
+                "office_exercise" -> officeExerciseCount++
             }
         }
 
         _uiState.update {
             it.copy(
                 walkingCount = walkingCount,
-                officeExerciseCount = officeExerciseCount,
-                yogaCount = yogaCount
+                runningCount = runningCount,
+                cyclingCount = cyclingCount,
+                yogaCount = yogaCount,
+                stretchingCount = stretchingCount,
+                strengthCount = strengthCount,
+                swimmingCount = swimmingCount,
+                officeExerciseCount = officeExerciseCount
             )
         }
     }
@@ -205,6 +227,20 @@ class ExerciseViewModel @Inject constructor(
         viewModelScope.launch {
             exerciseRepository.deleteRecord(record)
         }
+    }
+
+    /**
+     * 显示运动类型选择器
+     */
+    fun showTypeSelector() {
+        _uiState.update { it.copy(showTypeSelector = true) }
+    }
+
+    /**
+     * 隐藏运动类型选择器
+     */
+    fun hideTypeSelector() {
+        _uiState.update { it.copy(showTypeSelector = false) }
     }
 
     /**

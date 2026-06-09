@@ -2,6 +2,7 @@ package com.healthapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.healthapp.data.remote.AchievementData
 import com.healthapp.data.remote.HitokotoRepository
 import com.healthapp.data.remote.NetworkResult
 import com.healthapp.data.remote.WeatherRepository
@@ -42,6 +43,11 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
+    fun retry() {
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+        loadData()
+    }
+
     private fun loadData() {
         _uiState.update { it.copy(greeting = DateUtils.getGreeting()) }
 
@@ -53,6 +59,7 @@ class HomeViewModel @Inject constructor(
         loadWeeklyData()
         loadServerTip()
         loadServerChallenge()
+        loadRecentAchievements()
 
         // Reactive local data
         waterRepository.getTodayTotalAmount().onEach { amount ->
@@ -327,5 +334,48 @@ class HomeViewModel @Inject constructor(
                 else -> {} // 静默失败，使用本地挑战
             }
         }
+    }
+
+    /**
+     * 加载最近解锁的成就（最多3个）
+     */
+    private fun loadRecentAchievements() {
+        viewModelScope.launch {
+            when (val result = serverRepository.getAllAchievements()) {
+                is NetworkResult.Success -> {
+                    val recent = result.data
+                        .filter { it.unlocked }
+                        .sortedByDescending { it.unlockedAt ?: "" }
+                        .take(3)
+                        .map { item ->
+                            AchievementData(
+                                code = item.code,
+                                name = item.title,
+                                description = item.description,
+                                icon = item.icon,
+                                tier = item.tier,
+                                unlocked = item.unlocked,
+                                unlockedAt = item.unlockedAt
+                            )
+                        }
+                    _uiState.update { it.copy(recentAchievements = recent) }
+                }
+                else -> {} // 静默失败
+            }
+        }
+    }
+
+    /**
+     * 关闭成就解锁弹窗
+     */
+    fun dismissAchievementUnlock() {
+        _uiState.update { it.copy(showAchievementUnlock = null) }
+    }
+
+    /**
+     * 显示成就解锁弹窗
+     */
+    fun showAchievementUnlock(achievement: AchievementData) {
+        _uiState.update { it.copy(showAchievementUnlock = achievement) }
     }
 }

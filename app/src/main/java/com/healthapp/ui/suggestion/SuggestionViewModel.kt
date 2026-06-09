@@ -48,7 +48,7 @@ class SuggestionViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             suggestions = result.data.suggestions,
-                            dailySuggestionId = result.data.id,
+                            dailySuggestionId = result.data.id ?: 0,
                             userVotedId = result.data.userVotedSuggestionId,
                             error = null
                         )

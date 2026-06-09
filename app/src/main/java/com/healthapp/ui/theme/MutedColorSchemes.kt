@@ -31,6 +31,10 @@ enum class MutedColorScheme(
     val chartGreen: Color,
     val chartOrange: Color,
     val chartPurple: Color,
+    val chartTeal: Color,
+    val chartRed: Color,
+    val chartCyan: Color,
+    val chartYellow: Color,
     // 心情色（5级）
     val mood1: Color, // 很差
     val mood2: Color, // 较差
@@ -67,6 +71,10 @@ enum class MutedColorScheme(
         chartGreen = Color(0xFF8AB88A),
         chartOrange = Color(0xFFC4A87A),
         chartPurple = Color(0xFF9A8AAD),
+        chartTeal = Color(0xFF7AB0B0),
+        chartRed = Color(0xFFC48888),
+        chartCyan = Color(0xFF88C4C4),
+        chartYellow = Color(0xFFC4C088),
         // 心情色
         mood1 = Color(0xFFD4A0A0),
         mood2 = Color(0xFFD4B8A0),
@@ -104,6 +112,10 @@ enum class MutedColorScheme(
         chartGreen = Color(0xFF8AB88A),
         chartOrange = Color(0xFFC4A088),
         chartPurple = Color(0xFFAA88A8),
+        chartTeal = Color(0xFF88B0A8),
+        chartRed = Color(0xFFC49088),
+        chartCyan = Color(0xFF88B8C4),
+        chartYellow = Color(0xFFC4B888),
         // 心情色
         mood1 = Color(0xFFD4A8A0),
         mood2 = Color(0xFFD4BCA8),
@@ -141,6 +153,10 @@ enum class MutedColorScheme(
         chartGreen = Color(0xFF88B0A0),
         chartOrange = Color(0xFFC4A888),
         chartPurple = Color(0xFFA898C0),
+        chartTeal = Color(0xFF88B0B0),
+        chartRed = Color(0xFFC49098),
+        chartCyan = Color(0xFF88B8C0),
+        chartYellow = Color(0xFFC4B898),
         // 心情色
         mood1 = Color(0xFFD0A8B8),
         mood2 = Color(0xFFD0BCA8),
@@ -178,6 +194,10 @@ enum class MutedColorScheme(
         chartGreen = Color(0xFF8AA88A),
         chartOrange = Color(0xFFC4A888),
         chartPurple = Color(0xFFA090B0),
+        chartTeal = Color(0xFF88A8A0),
+        chartRed = Color(0xFFC49088),
+        chartCyan = Color(0xFF88B8A8),
+        chartYellow = Color(0xFFC4B888),
         // 心情色
         mood1 = Color(0xFFD0A8A0),
         mood2 = Color(0xFFD0B8A0),

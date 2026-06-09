@@ -83,6 +83,9 @@ fun RegisterScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "返回")
                     }
                 },
+                actions = {
+                    ServerSettingsIconButton()
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = scheme.background.copy(alpha = 0f),
                     titleContentColor = scheme.textPrimary

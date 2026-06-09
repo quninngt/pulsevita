@@ -27,6 +27,9 @@ interface ExerciseRecordDao {
     @Query("SELECT * FROM exercise_records ORDER BY date DESC, timestamp DESC")
     suspend fun getAllRecords(): List<ExerciseRecord>
 
+    @Query("SELECT * FROM exercise_records WHERE date >= :fromDate ORDER BY date DESC, timestamp DESC")
+    suspend fun getRecordsAfterDate(fromDate: String): List<ExerciseRecord>
+
     @Query("SELECT COALESCE(SUM(duration), 0) FROM exercise_records WHERE date = :date")
     suspend fun getTotalDurationByDateOnce(date: String): Int
 }

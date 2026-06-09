@@ -31,6 +31,7 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val currentScheme by themeViewModel.currentScheme.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -103,7 +104,53 @@ fun ProfileScreen(
 
             // Feature entry cards
             FeatureEntryCards(navController = navController)
+
+            // === 多用户支持：账号管理区域 ===
+            AccountManagementCard(
+                isLoggedIn = uiState.isLoggedIn,
+                username = uiState.username,
+                onLogoutClick = { viewModel.showLogoutDialog() },
+                onClearDataClick = { viewModel.showClearDataDialog() }
+            )
         }
+    }
+
+    // Logout Dialog
+    if (uiState.showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.hideLogoutDialog() },
+            title = { Text("确认退出") },
+            text = { Text("退出登录后，本地数据将保留。确定要退出吗？") },
+            confirmButton = {
+                TextButton(onClick = { viewModel.logout() }) {
+                    Text("退出", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.hideLogoutDialog() }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
+
+    // Clear Data Dialog
+    if (uiState.showClearDataDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.hideClearDataDialog() },
+            title = { Text("清除所有数据") },
+            text = { Text("此操作将清除所有本地数据（包括饮水、运动、心情、饮食记录），且无法恢复。确定要继续吗？") },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearAllData(context) }) {
+                    Text("清除", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.hideClearDataDialog() }) {
+                    Text("取消")
+                }
+            }
+        )
     }
 }
 
@@ -517,5 +564,119 @@ fun HealthIndicatorItem(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+/**
+ * 账号管理卡片
+ */
+@Composable
+fun AccountManagementCard(
+    isLoggedIn: Boolean,
+    username: String,
+    onLogoutClick: () -> Unit,
+    onClearDataClick: () -> Unit
+) {
+    val scheme = PulseVitaTheme.currentScheme()
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "账号管理",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 账号信息
+            if (isLoggedIn) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = null,
+                        tint = scheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "已登录",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = scheme.success
+                        )
+                        Text(
+                            text = username,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // 退出登录按钮
+                OutlinedButton(
+                    onClick = onLogoutClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(Icons.Default.Logout, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("退出登录")
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.PersonOff,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "未登录",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Divider()
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 清除数据按钮
+            OutlinedButton(
+                onClick = onClearDataClick,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Icon(Icons.Default.DeleteForever, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("清除所有数据")
+            }
+
+            Text(
+                text = "清除所有本地数据，包括饮水、运动、心情、饮食记录等",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }

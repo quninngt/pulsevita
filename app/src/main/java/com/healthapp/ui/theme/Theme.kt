@@ -137,7 +137,11 @@ object PulseVitaTheme {
             scheme.chartBlue,
             scheme.chartGreen,
             scheme.chartOrange,
-            scheme.chartPurple
+            scheme.chartPurple,
+            scheme.chartTeal,
+            scheme.chartRed,
+            scheme.chartCyan,
+            scheme.chartYellow
         )
     }
 

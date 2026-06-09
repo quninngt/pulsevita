@@ -34,14 +34,24 @@ class MoodRepository @Inject constructor(
     suspend fun deleteRecord(record: MoodRecord) = moodRecordDao.deleteRecord(record)
 
     /**
-     * 获取最近7天每天的心情等级
-     * @return List<Int?> 按日期从旧到新排列，长度固定7，无记录为null
+     * 获取最近N天每天的心情等级
+     * @return List<Int?> 按日期从旧到新排列，长度固定days，无记录为null
      */
-    suspend fun getLast7DaysMoodLevels(): List<Int?> {
+    suspend fun getLastNDaysMoodLevels(days: Int = 7): List<Int?> {
         val today = LocalDate.now()
-        return (6 downTo 0).map { daysAgo ->
+        return ((days - 1) downTo 0).map { daysAgo ->
             val date = today.minusDays(daysAgo.toLong()).format(dateFormatter)
             moodRecordDao.getLatestMoodLevelByDate(date)
         }
     }
+
+    /**
+     * 获取最近7天每天的心情等级（兼容旧调用）
+     */
+    suspend fun getLast7DaysMoodLevels(): List<Int?> = getLastNDaysMoodLevels(7)
+
+    /**
+     * 获取最近30天每天的心情等级
+     */
+    suspend fun getLast30DaysMoodLevels(): List<Int?> = getLastNDaysMoodLevels(30)
 }

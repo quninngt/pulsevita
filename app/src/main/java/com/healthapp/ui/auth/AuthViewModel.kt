@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.healthapp.data.repository.AuthRepository
 import com.healthapp.data.repository.AuthResult
+import com.healthapp.data.repository.SyncRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,8 @@ data class AuthUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val syncRepository: SyncRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -44,6 +46,8 @@ class AuthViewModel @Inject constructor(
             when (val result = authRepository.login(username, password)) {
                 is AuthResult.Success -> {
                     _uiState.update { it.copy(isLoading = false, isLoggedIn = true) }
+                    // 登录成功后后台同步数据
+                    launch { syncRepository.syncOnLogin() }
                 }
                 is AuthResult.Error -> {
                     _uiState.update { it.copy(isLoading = false, error = result.message) }

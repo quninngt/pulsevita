@@ -23,6 +23,7 @@ fun MoodStatisticsCard(
     bestDay: String,
     worstDay: String,
     trend: String, // "improving" / "stable" / "declining"
+    monthlyAverage: Float = 0f,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -63,6 +64,32 @@ fun MoodStatisticsCard(
                         else -> PulseVitaTheme.currentScheme().error
                     }
                 )
+            }
+
+            // 月平均心情（如果有数据）
+            if (monthlyAverage > 0f) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "本月平均心情",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = String.format("%.1f 分", monthlyAverage),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = when {
+                            monthlyAverage >= 4.0 -> PulseVitaTheme.currentScheme().success
+                            monthlyAverage >= 3.0 -> PulseVitaTheme.currentScheme().warning
+                            else -> PulseVitaTheme.currentScheme().error
+                        }
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(12.dp))

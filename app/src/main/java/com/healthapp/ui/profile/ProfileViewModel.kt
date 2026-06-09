@@ -1,10 +1,13 @@
 package com.healthapp.ui.profile
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.healthapp.data.local.AppDatabase
 import com.healthapp.data.local.entity.UserEntity
 import com.healthapp.data.repository.UserRepository
 import com.healthapp.util.BmiUtils
+import com.healthapp.data.remote.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,12 +21,18 @@ data class ProfileUiState(
     val editHeight: String = "",
     val editWeight: String = "",
     val editOccupation: String = "",
-    val bmi: Float? = null
+    val bmi: Float? = null,
+    val showLogoutDialog: Boolean = false,
+    val showClearDataDialog: Boolean = false,
+    val isLoggedIn: Boolean = false,
+    val username: String = ""
 )
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val database: AppDatabase,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -31,6 +40,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadData()
+        checkLoginStatus()
     }
 
     private fun loadData() {
@@ -49,6 +59,17 @@ class ProfileViewModel @Inject constructor(
                 )
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun checkLoginStatus() {
+        val token = tokenManager.getToken()
+        val username = tokenManager.getUsername() ?: ""
+        _uiState.update {
+            it.copy(
+                isLoggedIn = !token.isNullOrEmpty(),
+                username = username
+            )
+        }
     }
 
     fun startEditing() {
@@ -109,6 +130,39 @@ class ProfileViewModel @Inject constructor(
                 userRepository.updateUser(newUser)
             }
             _uiState.update { it.copy(isEditing = false) }
+        }
+    }
+
+    fun showLogoutDialog() {
+        _uiState.update { it.copy(showLogoutDialog = true) }
+    }
+
+    fun hideLogoutDialog() {
+        _uiState.update { it.copy(showLogoutDialog = false) }
+    }
+
+    fun showClearDataDialog() {
+        _uiState.update { it.copy(showClearDataDialog = true) }
+    }
+
+    fun hideClearDataDialog() {
+        _uiState.update { it.copy(showClearDataDialog = false) }
+    }
+
+    fun logout() {
+        tokenManager.clearToken()
+        _uiState.update { it.copy(showLogoutDialog = false, isLoggedIn = false, username = "") }
+    }
+
+    fun clearAllData(context: Context) {
+        viewModelScope.launch {
+            // Clear all local data
+            database.clearAllTables()
+            // Clear token
+            tokenManager.clearToken()
+            // Clear SharedPreferences
+            context.getSharedPreferences("health_app_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+            _uiState.update { it.copy(showClearDataDialog = false, isLoggedIn = false, username = "") }
         }
     }
 }

@@ -24,6 +24,7 @@ import com.healthapp.ui.components.NutritionOverviewCard
 import com.healthapp.ui.components.WaterHistoryChart
 import com.healthapp.ui.theme.PulseVitaTheme
 import com.healthapp.util.Constants
+import com.healthapp.util.WaterReminderManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +57,11 @@ fun DietScreen(
                     goalAmount = uiState.waterGoal,
                     onAddWater = { viewModel.addWater(it) }
                 )
+            }
+
+            // Water Reminder Settings
+            item {
+                WaterReminderSettingsCard(context = androidx.compose.ui.platform.LocalContext.current)
             }
 
             // Nutrition Overview Card
@@ -263,6 +269,7 @@ fun MealSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDietDialog(
     mealType: String,
@@ -274,12 +281,78 @@ fun AddDietDialog(
     onDismiss: () -> Unit
 ) {
     val mealTypeName = DisplayMappings.mealTypeName(mealType)
+    var showFoodSearch by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val searchResults = remember(searchQuery) {
+        if (searchQuery.isNotBlank()) {
+            com.healthapp.util.FoodDatabase.searchFoods(searchQuery).take(5)
+        } else {
+            emptyList()
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("添加$mealTypeName") },
         text = {
             Column {
+                // 食物搜索入口
+                OutlinedCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { showFoodSearch = !showFoodSearch }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("🔍 从常见食物中选择", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+
+                if (showFoodSearch) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        label = { Text("搜索食物") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    if (searchResults.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Column {
+                            searchResults.forEach { food ->
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                                    onClick = {
+                                        onDescriptionChange(food.name)
+                                        onCaloriesChange(food.calories.toString())
+                                        showFoodSearch = false
+                                        searchQuery = ""
+                                    }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column {
+                                            Text(food.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                                            Text(food.serving, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
+                                        Text("${food.calories}千卡", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = description,
                     onValueChange = onDescriptionChange,
@@ -306,4 +379,121 @@ fun AddDietDialog(
             }
         }
     )
+}
+
+/**
+ * 饮水提醒设置卡片
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WaterReminderSettingsCard(context: android.content.Context) {
+    val scheme = PulseVitaTheme.currentScheme()
+    var isEnabled by remember { mutableStateOf(WaterReminderManager.isEnabled(context)) }
+    var intervalHours by remember { mutableIntStateOf(WaterReminderManager.getIntervalHours(context)) }
+    var startHour by remember { mutableIntStateOf(WaterReminderManager.getStartHour(context)) }
+    var endHour by remember { mutableIntStateOf(WaterReminderManager.getEndHour(context)) }
+    var showSettings by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.Notifications,
+                        contentDescription = null,
+                        tint = scheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "饮水提醒",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Switch(
+                    checked = isEnabled,
+                    onCheckedChange = { enabled ->
+                        isEnabled = enabled
+                        WaterReminderManager.saveSettings(context, enabled, intervalHours, startHour, endHour)
+                    }
+                )
+            }
+
+            if (isEnabled) {
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(onClick = { showSettings = !showSettings }) {
+                    Text(if (showSettings) "收起设置" else "展开设置")
+                }
+
+                if (showSettings) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 提醒间隔
+                    Text("提醒间隔", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(1, 2, 3, 4).forEach { hours ->
+                            FilterChip(
+                                selected = intervalHours == hours,
+                                onClick = {
+                                    intervalHours = hours
+                                    WaterReminderManager.saveSettings(context, true, hours, startHour, endHour)
+                                },
+                                label = { Text("${hours}小时") }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // 提醒时间范围
+                    Text("提醒时间范围", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("从 ${startHour}:00", style = MaterialTheme.typography.bodyMedium)
+                        Slider(
+                            value = startHour.toFloat(),
+                            onValueChange = { startHour = it.toInt() },
+                            onValueChangeFinished = {
+                                WaterReminderManager.saveSettings(context, true, intervalHours, startHour, endHour)
+                            },
+                            valueRange = 6f..12f,
+                            steps = 6,
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("到 ${endHour}:00", style = MaterialTheme.typography.bodyMedium)
+                        Slider(
+                            value = endHour.toFloat(),
+                            onValueChange = { endHour = it.toInt() },
+                            onValueChangeFinished = {
+                                WaterReminderManager.saveSettings(context, true, intervalHours, startHour, endHour)
+                            },
+                            valueRange = 18f..23f,
+                            steps = 5,
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

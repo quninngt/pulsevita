@@ -35,6 +35,7 @@ import com.healthapp.ui.plan.PlanScreen
 import com.healthapp.ui.profile.ProfileScreen
 import com.healthapp.ui.profile.ExportScreen
 import com.healthapp.ui.report.ReportScreen
+import com.healthapp.ui.suggestion.SuggestionScreen
 
 data class BottomNavItem(
     val screen: Screen,
@@ -160,6 +161,9 @@ fun HealthNavHost() {
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(navController = navController)
+            }
+            composable(Screen.Suggestion.route) {
+                SuggestionScreen(navController = navController)
             }
             composable(Screen.Plan.route) {
                 PlanScreen(navController = navController)

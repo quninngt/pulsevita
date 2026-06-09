@@ -87,7 +87,7 @@ fun MentalScreen(
                 }
             }
 
-            // Mood Trend Chart
+            // Mood Trend Chart with 7/30 day toggle
             item {
                 SectionHeader(
                     icon = Icons.Default.TrendingUp,
@@ -99,9 +99,16 @@ fun MentalScreen(
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
+                    val chartData = if (uiState.trendPeriod == 30)
+                        uiState.monthlyMoodLevels.map { (it ?: 0).toFloat() }
+                    else
+                        uiState.weeklyMoodLevels.map { (it ?: 0).toFloat() }
+
                     MoodTrendChart(
-                        moodLevels = uiState.weeklyMoodLevels.map { (it ?: 0).toFloat() },
-                        modifier = Modifier.padding(16.dp)
+                        moodLevels = chartData,
+                        period = uiState.trendPeriod,
+                        modifier = Modifier.padding(16.dp),
+                        onPeriodChange = { viewModel.setTrendPeriod(it) }
                     )
                 }
             }
@@ -112,7 +119,8 @@ fun MentalScreen(
                     weeklyAverage = uiState.weeklyAverage,
                     bestDay = uiState.bestDay,
                     worstDay = uiState.worstDay,
-                    trend = uiState.trend
+                    trend = uiState.trend,
+                    monthlyAverage = uiState.monthlyAverage
                 )
             }
 

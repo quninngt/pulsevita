@@ -87,7 +87,7 @@ data class LoginRequest(
 
 /** 每日建议数据 */
 data class DailySuggestionResponse(
-    @Json(name = "id") val id: Long,
+    @Json(name = "id") val id: Long? = null,
     @Json(name = "date") val date: String,
     @Json(name = "suggestions") val suggestions: List<SuggestionData>,
     @Json(name = "userVotedSuggestionId") val userVotedSuggestionId: Long? = null
@@ -117,14 +117,17 @@ data class SimpleApiResponse(
 /** 优化计划 */
 data class PlanItem(
     @Json(name = "id") val id: Long,
-    @Json(name = "suggestionId") val suggestionId: Long,
-    @Json(name = "title") val title: String,
-    @Json(name = "description") val description: String,
-    @Json(name = "progress") val progress: Int = 0,
-    @Json(name = "completed") val completed: Boolean = false,
-    @Json(name = "completedDate") val completedDate: String? = null,
-    @Json(name = "createdAt") val createdAt: String = ""
-)
+    @Json(name = "suggestionTitle") val title: String = "",
+    @Json(name = "suggestionDescription") val description: String = "",
+    @Json(name = "suggestionCategory") val category: String = "",
+    @Json(name = "status") val status: String = "ACTIVE",
+    @Json(name = "startDate") val startDate: String = "",
+    @Json(name = "endDate") val endDate: String = "",
+    @Json(name = "progress") val progress: Int = 0
+) {
+    val completed: Boolean get() = status == "COMPLETED"
+    val completedDate: String? get() = if (completed) endDate else null
+}
 
 /** 更新进度请求 */
 data class UpdateProgressRequest(
@@ -152,12 +155,13 @@ data class ReportListResponse(
 
 /** 成就 */
 data class AchievementItem(
-    @Json(name = "id") val id: Long,
-    @Json(name = "icon") val icon: String,
-    @Json(name = "title") val title: String,
-    @Json(name = "description") val description: String,
-    @Json(name = "unlocked") val unlocked: Boolean,
-    @Json(name = "progress") val progress: Float = 0f
+    @Json(name = "code") val code: String = "",
+    @Json(name = "name") val title: String = "",
+    @Json(name = "description") val description: String = "",
+    @Json(name = "icon") val icon: String = "",
+    @Json(name = "tier") val tier: String = "",
+    @Json(name = "unlocked") val unlocked: Boolean = false,
+    @Json(name = "unlockedAt") val unlockedAt: String? = null
 )
 
 /** 添加计划请求 */
@@ -198,42 +202,42 @@ interface ServerApiService {
     @GET("api/suggestions/daily")
     suspend fun getDailySuggestions(
         @Query("date") date: String
-    ): DailySuggestionResponse
+    ): ServerApiResponse<DailySuggestionResponse>
 
     /** 投票 */
     @POST("api/suggestions/vote")
     suspend fun vote(
         @Body request: VoteRequest
-    ): SimpleApiResponse
+    ): ServerApiResponse<Void>
 
     // ---- Plans ----
 
     /** 获取活跃计划列表 */
     @GET("api/plan/active")
-    suspend fun getActivePlans(): List<PlanItem>
+    suspend fun getActivePlans(): ServerApiResponse<List<PlanItem>>
 
     /** 获取所有计划列表 */
     @GET("api/plan/all")
-    suspend fun getAllPlans(): List<PlanItem>
+    suspend fun getAllPlans(): ServerApiResponse<List<PlanItem>>
 
     /** 添加计划 */
     @POST("api/plan/add")
     suspend fun addPlan(
         @Body request: AddPlanRequest
-    ): PlanItem
+    ): ServerApiResponse<PlanItem>
 
     /** 更新计划进度 */
     @PUT("api/plan/{planId}/progress")
     suspend fun updateProgress(
         @Path("planId") planId: Long,
         @Body request: UpdateProgressRequest
-    ): PlanItem
+    ): ServerApiResponse<PlanItem>
 
     /** 完成计划 */
     @POST("api/plan/{planId}/complete")
     suspend fun completePlan(
         @Path("planId") planId: Long
-    ): PlanItem
+    ): ServerApiResponse<PlanItem>
 
     // ---- Reports ----
 
@@ -241,7 +245,7 @@ interface ServerApiService {
     @GET("api/reports/latest")
     suspend fun getLatestReport(
         @Query("type") type: String
-    ): HealthReport?
+    ): ServerApiResponse<HealthReport?>
 
     /** 获取报告列表 */
     @GET("api/reports/list")
@@ -249,13 +253,13 @@ interface ServerApiService {
         @Query("type") type: String,
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 10
-    ): ReportListResponse
+    ): ServerApiResponse<List<HealthReport>>
 
     // ---- Achievements ----
 
     /** 获取所有成就 */
     @GET("api/achievements/all")
-    suspend fun getAllAchievements(): List<AchievementItem>
+    suspend fun getAllAchievements(): ServerApiResponse<List<AchievementItem>>
 
     // ---- Records ----
 

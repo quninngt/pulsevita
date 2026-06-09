@@ -22,6 +22,11 @@ object Constants {
     const val EXERCISE_WALKING = "walking"
     const val EXERCISE_OFFICE = "office_exercise"
     const val EXERCISE_YOGA = "yoga"
+    const val EXERCISE_RUNNING = "running"
+    const val EXERCISE_CYCLING = "cycling"
+    const val EXERCISE_SWIMMING = "swimming"
+    const val EXERCISE_STRETCHING = "stretching"
+    const val EXERCISE_STRENGTH = "strength"
 
     // Meal types
     const val MEAL_BREAKFAST = "breakfast"
@@ -45,4 +50,7 @@ object Constants {
     const val BREATHING_INHALE_SECONDS = 4
     const val BREATHING_HOLD_SECONDS = 7
     const val BREATHING_EXHALE_SECONDS = 8
+
+    // Server API
+    const val SERVER_BASE_URL = "https://novels-varying-iii-matt.trycloudflare.com/"
 }

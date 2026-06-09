@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.healthapp.data.remote.PlanItem
 import com.healthapp.ui.theme.PulseVitaTheme
+import com.healthapp.ui.components.ErrorRetryCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,12 +28,7 @@ fun PlanScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedTab by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(uiState.error) {
-        uiState.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.clearError()
-        }
-    }
+    // Error handled inline with ErrorRetryCard
 
     val scheme = PulseVitaTheme.currentScheme()
 
@@ -86,6 +82,17 @@ fun PlanScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
+                }
+            } else if (uiState.error != null) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ErrorRetryCard(
+                        message = uiState.error!!,
+                        onRetry = { viewModel.loadPlans() },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
             } else {
                 when (selectedTab) {

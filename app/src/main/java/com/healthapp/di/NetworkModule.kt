@@ -27,12 +27,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        serverUrlInterceptor: ServerUrlInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
         })
+        .addInterceptor(serverUrlInterceptor)
         .addInterceptor(authInterceptor)
         .build()
 
@@ -84,7 +88,7 @@ object NetworkModule {
     @Named("server")
     fun provideServerRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://82.156.72.247:8080/")
+            .baseUrl(ServerUrlInterceptor.PLACEHOLDER_URL)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

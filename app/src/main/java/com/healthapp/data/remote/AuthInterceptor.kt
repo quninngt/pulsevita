@@ -8,13 +8,15 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import com.squareup.moshi.Moshi
+import com.healthapp.util.ServerConfig
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthInterceptor @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val serverConfig: ServerConfig
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -69,7 +71,7 @@ class AuthInterceptor @Inject constructor(
                 .toRequestBody("application/json".toMediaType())
 
             val request = Request.Builder()
-                .url("http://82.156.72.247:8080/api/auth/refresh")
+                .url(serverConfig.getServerUrl() + "api/auth/refresh")
                 .post(body)
                 .build()
 

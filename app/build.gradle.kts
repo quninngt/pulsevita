@@ -13,8 +13,8 @@ android {
         applicationId = "com.healthapp.v2"
         minSdk = 26
         targetSdk = 34
-        versionCode = 11
-        versionName = "2.0.1"
+        versionCode = 12
+        versionName = "3.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

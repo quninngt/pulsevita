@@ -58,4 +58,9 @@ class TokenManager @Inject constructor(
     fun getRefreshTokenBlocking(): String? = runBlocking {
         getRefreshToken().first()
     }
+
+    // === 多用户支持：便捷方法 ===
+    fun getToken(): String? = getAccessTokenBlocking()
+    fun getUsername(): String? = null  // 可以从 SharedPreferences 或 DataStore 获取
+    fun clearToken() { runBlocking { clearTokens() } }
 }

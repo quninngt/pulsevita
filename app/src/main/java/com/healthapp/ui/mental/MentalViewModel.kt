@@ -31,11 +31,14 @@ data class MentalUiState(
     val quote: String = "",
     val quoteFrom: String = "",
     val weeklyMoodLevels: List<Int?> = emptyList(),
+    val monthlyMoodLevels: List<Int?> = emptyList(),
+    val trendPeriod: Int = 7, // 7 or 30
     // === 新增：心情统计数据 ===
     val weeklyAverage: Float = 0f,
     val bestDay: String = "",
     val worstDay: String = "",
-    val trend: String = "stable" // "improving" / "stable" / "declining"
+    val trend: String = "stable", // "improving" / "stable" / "declining"
+    val monthlyAverage: Float = 0f
 )
 
 @HiltViewModel
@@ -63,9 +66,24 @@ class MentalViewModel @Inject constructor(
             calculateMoodStatistics(levels)
         }
 
+        // Load monthly mood data
+        viewModelScope.launch {
+            val levels = moodRepository.getLast30DaysMoodLevels()
+            val validLevels = levels.filterNotNull()
+            val avg = if (validLevels.isNotEmpty()) validLevels.average().toFloat() else 0f
+            _uiState.update { it.copy(monthlyMoodLevels = levels, monthlyAverage = avg) }
+        }
+
         moodRepository.getRecentRecords(7).onEach { records ->
             _uiState.update { it.copy(recentMoods = records) }
         }.launchIn(viewModelScope)
+    }
+
+    /**
+     * 切换趋势图时间范围
+     */
+    fun setTrendPeriod(period: Int) {
+        _uiState.update { it.copy(trendPeriod = period) }
     }
 
     /**
